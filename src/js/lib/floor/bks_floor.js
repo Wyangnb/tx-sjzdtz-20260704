@@ -25,7 +25,7 @@ var bksFloor = {
         bj: 64,
         href: (window.location.href.indexOf(80) > -1 || window.location.href.indexOf("test") > -1)? '../../img/': 'https://game.gtimg.cn/images/dfm/cp/a20250113map/',
         // bj: 128,
-        floorAliasMap: {
+        floorAliasMap: { 
           '皇家博物馆':'皇家博物馆'
         },
         floor: {
