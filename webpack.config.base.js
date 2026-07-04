@@ -1,0 +1,174 @@
+/*
+ * @Author: z
+ * @Date: 2017-06-05 11:29:16
+ * @Last Modified by: xieshengyong
+ * @Last Modified time: 2019-05-24 22:01:15
+ */
+const path = require('path');
+// const webpack = require('webpack');
+const fs = require('fs');
+
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+var copyItem = [];
+
+if (fs.existsSync('src/img/kf')) {
+    copyItem.push({
+        from: 'src/img/kf',
+        to: 'img',
+        flatten: true
+    });
+}
+
+if (fs.existsSync('src/img/map_db')) {
+    copyItem.push({
+        from: 'src/img/map_db',
+        to: './img/map_db',
+        flatten: true
+    });
+}
+
+if (fs.existsSync('src/img/map_db')) {
+    copyItem.push({
+        from: 'src/img/map_db',
+        to: './img/map_db',
+        flatten: true
+    });
+}
+if (fs.existsSync('src/img/daba')) {
+    copyItem.push({
+        from: 'src/img/daba',
+        to: './img/daba',
+        flatten: true
+    });
+}
+if (fs.existsSync('src/img/xdaba')) {
+    copyItem.push({
+        from: 'src/img/xdaba',
+        to: './img/xdaba',
+        flatten: true
+    });
+}
+if (fs.existsSync('src/img/xdaba')) {
+    copyItem.push({
+        from: 'src/img/xdaba',
+        to: './img/xdaba',
+        flatten: true
+    });
+}
+// if (fs.existsSync('src/img/lv3')) {
+//     copyItem.push({
+//         from: 'src/img/lv3',
+//         to: './img/lv3',
+//         flatten: true
+//     });
+// }
+
+module.exports = function () {
+    return {
+        entry: {
+            main: './src/js/index.js'
+        },
+        module: {
+            rules: [
+                // {
+                //     test: /\.ejs/,
+                //     exclude: [
+                //         path.resolve(__dirname, 'node_modules')
+                //     ],
+                //     use: [
+                //         {
+                //             loader: 'ejs-compiled-loader',
+                //             options: {}
+                //         }
+                //     ]
+                // },
+                // todo: lib下的js未进行压缩
+                {
+                    test: /\.js$/,
+                    include: [
+                        path.resolve(__dirname, 'src/js/lib')
+                    ],
+                    use: [
+                        {
+                            loader: 'url-loader',
+                            options: {
+                                limit: 1,
+                                name: 'js/lib/[name].[ext]'
+                            }
+                        }
+                    ]
+                },
+                {
+                    test: /\.css$/,
+                    include: [
+                        path.resolve(__dirname, 'src/js/lib')
+                    ],
+                    use: [
+                        {
+                            loader: 'url-loader',
+                            options: {
+                                limit: 1,
+                                name: 'css/[name].[ext]'
+                            }
+                        }
+                    ]
+                },
+                {
+                    test: /\.(png|jpg|gif|svg|plist|int|ttf|otf|TTF|ico|mp3|mp4|ts|webp)$/,
+                    include: [
+                        path.resolve(__dirname, 'src/img')
+                    ],
+                    use: [
+                        {
+                            loader: 'url-loader',
+                            options: {
+                                limit: 5000,
+                                name: 'img/[name].[ext]'
+                            }
+                        }
+                    ]
+                },
+                {
+                    test: /\.(mp3|mp4)$/,
+                    include: [
+                        path.resolve(__dirname, 'src/media')
+                    ],
+                    use: [
+                        {
+                            loader: 'url-loader',
+                            options: {
+                                limit: 1,
+                                name: 'img/[name].[hash:8].[ext]'
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        resolve: {
+            alias: {}
+        },
+        plugins: [
+            new CopyWebpackPlugin(copyItem),
+            new HtmlWebpackPlugin({
+                filename: './index.html',
+                template: 'index.ejs',
+                // template: 'ejs-render-loader!index.ejs',
+                inject: false,
+                hash: false,
+                minify: {
+                    // removeComments: false, // 移除HTML中的注释
+                    collapseWhitespace: false, // 删除空白符与换行符
+                    minifyCSS: true, // 压缩 HTML 中出现的 CSS 代码
+                    minifyJS: true // 压缩 HTML 中出现的 JS 代码
+                }
+            })
+        ],
+        externals: {
+            '$': 'window.$',
+            'global': 'window.global'
+        }
+    };
+};

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <title>《三角洲行动》地图工具</title>
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="robots" content="all">
+    <meta name="author" content="Tencent-CP">
+    <meta name="Copyright" content="Tencent">
+    <meta name="keywords" content="三角洲行动,三角洲特种部队,Delta Force,三角洲新游,三角洲特种部队新游,Delta Force新游,新游预约,DF预约,DF奖励,新游奖励,三角洲绿洲营地,绿洲营地三角洲">
+    <meta id="share-description" itemprop="description" name="description" content="欢迎使用《三角洲行动》地图工具，您可使用本地图快速查询烽火行动模式中各地图的物资点位，帮助您在险象环生的战场中成功撤离。">
+    <meta id="share-name" itemprop="name" content="">
+    <meta id="share-image" itemprop="image" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta itemprop="image" content="https://game.gtimg.cn/images/dfm/cp/a20240125main/share-icon.png">
+    <link rel="icon" href="https://game.gtimg.cn/images/dfm/favicon.ico">
+    <link rel="stylesheet" href="https://game.gtimg.cn/images/dfm/cp/a20240729directory/leaflet.css" crossorigin="" />
+    <link rel="stylesheet" href="<%= require('./src/js/lib/Leaflet/L.Control.Zoomslider.css') %>" crossorigin="" />
+    <!-- <script src="<%= require('./src/js/lib/Leaflet/leaflet-src.js') %>"></script> -->
+    <script src="<%= require('./src/js/lib/leaflet.js') %>"></script>
+    <script src="<%= require('./src/js/lib/Leaflet/L.Control.Zoomslider.js') %>"></script>
+    <!-- <script src="<%= require('./src/js/lib/rbush.js') %>"></script> -->
+    <!-- <script src="<%= require('./src/js/lib/leaflet-markers-canvas.js') %>"></script> -->
+
+  
+    <script type="text/javascript">
+        (function () {
+          // var a = navigator.userAgent; if (-1 != a.indexOf("iPhone") || -1 != a.indexOf("iPad") || -1 != a.indexOf("iPod") || -1 != a.indexOf("Android") || -1 != a.indexOf("HarmonyOS")) {
+          //   a = document.referrer; if (-1 < a.indexOf("baidu.com") || -1 < a.indexOf("sogou.com") || -1 < a.indexOf("haosou.com") || -1 < a.indexOf("hao76.com")) if (a = void 0, window.sessionStorage) sessionStorage.setItem("channel", "seo"); else { var a = a || 0, b = ""; 0 != a && (b = new Date, b.setTime(b.getTime() + 1E3 * a), b = "; expires=" + b.toGMTString()); document.cookie = "channel=" + escape("seo") + b + "; path=/" }
+          //   self.location = "/m/index.html" + location.search
+          // }
+          
+          // 通过屏幕尺寸以及宽高比判断是否是移动端横屏(需要规避pc屏幕尺寸的情况)
+          function isMobileLandscape() {
+            var screenWidth = window.screen.width;
+            var screenHeight = window.screen.height;
+            var aspectRatio = screenWidth / screenHeight;
+            
+            // 判断是否为横屏 (宽度大于高度)
+            var isLandscape = screenWidth > screenHeight;
+            
+            // 移动端屏幕尺寸范围判断 (避免PC屏幕误判)
+            // 一般移动设备屏幕宽度不会超过1024px，高度不会超过768px
+            var isMobileSize = (screenWidth <= 1024 && screenHeight <= 768) || 
+                              (screenWidth <= 768 && screenHeight <= 1024);
+            
+            // 宽高比判断：移动端横屏通常宽高比在1.3-2.5之间
+            var isMobileAspectRatio = aspectRatio >= 1.3 && aspectRatio <= 2.5;
+            
+            // 综合判断：横屏 + 移动端尺寸 + 合理宽高比
+            return isLandscape && isMobileSize && isMobileAspectRatio;
+          }
+          
+          // 检测移动端横屏并跳转
+          if (isMobileLandscape()) {
+            // 可以在这里添加跳转到移动端页面的逻辑
+            self.location ="/cp/a20240729directory/m/index.html" + location.search;
+          }
+        })();
+      </script>
+
+  <script type="text/javascript"><%= require('raw-loader!./src/js/app/rem.js') %></script>
+
+  <% if (process.env.NODE_ENV==='handover' ) { %>
+    <% for (var css in htmlWebpackPlugin.files.css) { %>
+      <% var cssFile=htmlWebpackPlugin.files.css[css] %>
+      <link href="<%= cssFile %>" rel="stylesheet" />
+    <% } %>
+  <% } else { %>
+    <% for (var css in htmlWebpackPlugin.files.css) { %>
+      <% var cssFile=htmlWebpackPlugin.files.css[css].substr(htmlWebpackPlugin.files.publicPath.length); %>
+      <link href="<%= cssFile %>" rel="stylesheet" />
+    <% } %>
+  <% } %>
+
+  <!-- 页面设计：cp | 页面制作：cp | 创建：2023-07-13 -->
+</head>
+
+<body>
+    <div class="content">
+          <!-- full -->
+        <div class="m-main-wrap full">
+          <!-- 竖屏页 -->
+          <!-- absf -->
+          <div class="m-vertical absf">
+              <!-- abcter -->
+            <div class="m-wrap sizcover absf">
+              <div class="m-index absf">
+                <div id="MapContainer" class="map">
+                  <div class="map-mask img_map_mask absf sizcover"></div>
+                </div>
+            
+                <div class=" nav-ctn img_nav_bg2">
+                  <div class="nav-title img_nav_title"></div>
+
+
+
+                  <!-- 搜索 -->
+                  <div class="map-select">
+                    <input type="text" class="select-iput" placeholder="搜索">
+                    <div class="select-ctn">
+
+                    </div>
+                    <div class="btn-close-select">X</div>
+                  </div>
+                  <!-- 分层 -->
+                  <div class="map-floor">
+                    <div class="btn-floor btn_floor"><p>查看地图分层</p></div>
+                    <div class="floor-list">
+                      <div class="floor-item not-event act">大地图模式</div>
+                    </div>
+                  </div>
+                  <!-- 快速定位 -->
+                  <div class="select-region-ctn">
+                    <div class="btn-select-region btn_select"><p class="curr-reigon">地图快速定位</p></div>
+                    <div class="region-list"></div>
+                  </div>
+
+                  <!-- 切换地图 -->
+                  <div class="curr-map-ctn">
+                    <div class="curr-map-name">零号大坝 <span class="map-lv"> ( 常规 )</span></div>
+                    <div class="btn-change-map-ctn ">
+                      <div class="btn-change-map img_change_map"></div>
+                      <!-- 烽火地带 -->
+                      <div class="map-list-ctn">
+                        <div class="map-list">
+                          <div class="map-item map-item-0" data-index="0">零号大坝</div>
+                          <div class="map-item map-item-1" data-index="1">长弓溪谷</div>
+                          <div class="map-item map-item-2" data-index="2">航天基地</div>
+                          <div class="map-item map-item-3" data-index="3">巴克什</div>
+                          <div class="map-item map-item-4" data-index="4">潮汐监狱</div>
+                          <div class="map-item map-item-5" data-index="5">AZ3</div>
+                        </div>
+                        <div class="map-lv-list">
+                          <div class="map-lv-item map-lv-item-0" data-lv="0">常规</div>
+                          <div class="map-lv-item map-lv-item-1" data-lv="1">机密</div>
+                          <div class="map-lv-item map-lv-item-2" data-lv="2">绝密</div>
+                          <div class="map-lv-item map-lv-item-3" data-lv="3">永夜</div>
+                          <!-- <div class="map-lv-item map-lv-item-4" data-lv="1">长夜</div>
+                          <div class="map-lv-item map-lv-item-5" data-lv="2">终夜</div> -->
+                        </div>
+
+                        <div class="war-list">
+                          <div class="map-item map-item-0" data-index="0" data-map="pc">攀升</div>
+                          <div class="map-item map-item-1" data-index="1" data-map="ljd">临界点</div>
+                          <div class="map-item map-item-2" data-index="2" data-map="gc">贯穿</div>
+                          <div class="map-item map-item-3" data-index="3" data-map="jq">烬区</div>
+                          <div class="map-item map-item-4" data-index="4" data-map="qhz">堑壕战</div>
+                          <div class="map-item map-item-5" data-index="5" data-map="df">刀锋</div>
+                          <div class="map-item map-item-6" data-index="6" data-map="dg">断轨</div>
+                          <div class="map-item map-item-7" data-index="7" data-map="hdz">风暴眼</div>
+                          <div class="map-item map-item-8" data-index="8" data-map="jzt">金字塔</div>
+                          <div class="map-item map-item-9" data-index="9" data-map="dc">断层</div>
+                          <div class="map-item map-item-10" data-index="10" data-map="yz">余震</div>
+                          <div class="map-item map-item-11" data-index="11" data-map="wmsyh">乌姆斯运河</div>
+                          <div class="map-item map-item-12" data-index="12" data-map="dsc">克劳狄斗兽场</div>
+                        </div>
+                        <div class="war-lv-list">
+                          <div class="map-lv-item map-lv-item-0" data-lv="0" data-type="pc">PC</div>
+                          <div class="map-lv-item map-lv-item-1" data-lv="1" data-type="mobile">移动</div>
+                          <div class="btn-type-change close">
+                            <div class="type-option-item" data-type="normal">攻防模式</div>
+                            <div class="type-option-item" data-type="occupy">占领模式</div>
+                          </div>
+                        </div>
+
+                      </div>
+                     
+                    </div>
+                  </div>
+
+                  <div class="btn-war-change fh">
+                    <div class="map-change-text fhdd img_map_type_fhdd_act"></div>
+                    <div class="war-change-text qmzc img_map_type_qmzc"></div>
+                  </div>
+                  <!-- 进攻\防守 -->
+                  <div class="btn-view-change">
+                    <div class="view-change1">
+                      <div class="choose-i"></div>
+                      <div class="view-change1-text">攻方视角</div>
+                    </div>
+                    <div class="view-change2">
+                      <div class="choose-i"></div>
+                      <div class="view-change2-text">守方视角</div>
+                    </div>
+                  </div>
+
+                  <div class="show random-ctn">
+                    <div class="abs random-bg img_random_list_bg"></div>
+                    <p>开启地图随机事件 <span class="random-name">暂无特殊事件</span></p>
+                    <div class="btn-random close hide"></div>
+                    
+                    <div class="random-list map-1">
+                      <div class="random-item random-item-1">
+                        <div class="random-name-text">坠机事件</div>
+                        <div class="btn-random-opt"></div>
+                      </div>
+                      <div class="random-item random-item-2">
+                        <div class="random-name-text">森林山火</div>
+                        <div class="btn-random-opt"></div>
+                      </div>
+                      <div class="random-item random-item-3">
+                        <div class="random-name-text">断桥事件</div>
+                        <div class="btn-random-opt"></div>
+                      </div>
+                      <div class="random-item-close">
+                        <div class="random-name-text">不开启特殊事件</div>
+                      </div>
+                    </div>
+                  </div>
+                
+
+                   <div class="choose-all">
+                    <div class="btn-choose-all-icon img_all_close"></div>
+                    全选
+                   </div>
+                  <!-- 选项标签 -->
+                  <div class="nav-option-ctn">
+                    <div class="nav-options"></div>
+                    <div class="nav-type-list"></div>
+                    <div class="reset-choose img_reset"></div>
+                  </div>
+                
+                  <div class="btn-nav-state">
+                    <div class="nav-state-icon img_nav_nav_state"></div>
+                  </div>
+           
+                </div>
+
+                <div class="right-nav">
+                  <div class="right-nav-bg img_right_nav_bg"></div>
+                  <div class="btn-log"></div>
+                  <div class="btn-share"></div>
+                  <div class="btn-tutorial"></div>
+                  <div class="btn-feedback"></div>
+                </div>
+
+                <!-- 楼层导航 -->
+                <div class="map-floor-change-ctn">
+                  <div class="map-floor-change-top">
+                    <!-- <div class="floor-left-i"></div> -->
+                    <div class="map-floor-change-list">
+                      <div class="map-floor-item" data-index="0">1</div>
+                      <div class="map-floor-item" data-index="1">2</div>
+                      <div class="map-floor-item" data-index="2">3</div>
+                      <div class="map-floor-item" data-index="3">4</div>
+                    </div>
+                    <!-- <div class="floor-right-i"></div> -->
+                  </div>
+
+                  <div class="floor-change-ctn">
+                    <div class="floor-change-prev"></div>
+                    <div class="floor-change-tips">点击切换楼层</div>
+                    <div class="floor-change-next"></div>
+                  </div>
+                  <div class="floor-tips">您正在用分层模式查看<span class="span1">行政辖区</span></div>
+                 </div>
+
+                 <div class="deploy-swiper">
+                  <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                    </div>
+                    <div class="btn-swiper-prev"></div>
+                    <div class="btn-swiper-next"></div>
+                   </div>
+                 </div>
+
+                <!-- 导航 -->
+                 <div class="war-lv-change-ctn">
+                  <div class="war-lv-change-top">
+                    <div class="lv-left-i"></div>
+                    <div class="war-lv-change-list">
+                      <div class="war-lv-item" data-index="0">1</div>
+                      <div class="war-lv-item" data-index="1">2</div>
+                      <div class="war-lv-item" data-index="2">3</div>
+                      <div class="war-lv-item" data-index="3">4</div>
+                    </div>
+                    <div class="lv-right-i"></div>
+                  </div>
+
+                  <div class="lv-change-ctn">
+                    <div class="lv-change-prev"></div>
+                    <div class="lv-change-tips">区域A</div>
+                    <div class="lv-change-next"></div>
+                  </div>
+                 </div>
+
+                 <!-- <div class="deploy-swiper">
+                  <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                    </div>
+                    <div class="btn-swiper-prev"></div>
+                    <div class="btn-swiper-next"></div>
+                   </div>
+                 </div> -->
+                
+
+                <!-- 弹窗 -->
+                 <div class="log-pop">
+                  <div class="log-pop-bg"></div>
+                  <div class="abcter log-pop-ctn-bg img_log_pop">
+                    <div class="log-title">更新日志</div>
+                    <div class="log-pop-title">*温馨提示：坐标持续更新中，目前地图工具内坐标信息为阿萨拉赛季版本。</div>
+                    <div class="abcter log-pop-ctn">
+
+                      <div class="log-item">
+                        <div class="log-time">11月18日</div>
+                        <div class="log-fgx img_pop_fgx"></div>
+                        <div class="log-text">
+                          <ul>
+                            <li>地图工具坐标已更新至阿萨拉赛季版本；</li>
+                            <li>新增烽火地带-新增全面战场-金字塔地图、断层地图；</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div class="log-item">
+                        <div class="log-time">7月11日</div>
+                        <div class="log-fgx img_pop_fgx"></div>
+                        <div class="log-text">
+                          <ul>
+                            <li>地图工具坐标已更新至破壁赛季版本；</li>
+                            <li>新增烽火地带-潮汐监狱的分层地图，选中对应区域后即可进入具体楼层查看；</li>
+                            <li>新增全面战场-风暴眼地图；</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div class="log-item">
+                        <div class="log-time">4月29日</div>
+                        <div class="log-fgx img_pop_fgx"></div>
+                        <div class="log-text">
+                          <ul>
+                            <li>地图工具坐标已更新至黑夜之子赛季版本；</li>
+                            <li>新增零号大坝-行政辖区、长弓溪谷-钻石皇后酒店、巴克什-皇家博物馆区域的分层地图，选中对应区域后即可进入具体楼层查看；</li>
+                            <li>新增零号大坝（前夜、长夜、终夜）模式地图；</li>
+                            <li>新增长弓溪谷、航天基地地图随机事件。</li>
+                          </ul>
+                        </div>
+                      </div>
+
+
+                      <div class="log-item">
+                        <div class="log-time">1月15日</div>
+                        <div class="log-fgx img_pop_fgx"></div>
+                        <div class="log-text">
+                          <ul>
+                            <li>地图工具坐标已更新至焰火赛季版本；</li>
+                            <li>烽火地带模式已更新巴克什（绝密）、零号大坝地下区域坐标；</li>
+                            <li>全面战场模式已更新刀锋、断轨地图坐标；</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div class="log-item">
+                        <div class="log-time">11月21日</div>
+                        <div class="log-fgx img_pop_fgx"></div>
+                        <div class="log-text">
+                          <ul>
+                            <li>地图工具坐标已更新至聚变赛季版本；</li>
+                            <li>烽火地带模式已更新巴克什地图坐标（含巴别塔区域坐标）；</li>
+                            <li>全面战场模式地图正式上线，已更新攀升、临界点、贯穿、烬区、堑壕战的据点、基地部署点、载具、载具补给站、固定弹药箱、固定武器、装置坐标，并支持切换攻防模式和占领模式、PC端和移动端的地图。</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div class="log-item">
+                        <div class="log-time">9月26日</div>
+                        <div class="log-fgx img_pop_fgx"></div>
+                        <div class="log-text">《三角洲行动》地图工具正式版上线，已更新零号大坝（普通）、零号大坝（机密）、长弓溪谷（普通）、长弓溪谷（机密）、航天基地（机密）、航天基地（绝密）、巴克什（普通）、巴克什（机密）的物资点、出生点、撤离点及首领坐标。</div>
+                      </div>
+   
+                      <div class="log-item">
+                        <div class="log-time">8月15日</div>
+                        <div class="log-fgx img_pop_fgx"></div>
+                        <div class="log-text">《三角洲行动》地图工具beta版正式上线，已更新零号大坝（普通）、零号大坝（机密）、长弓溪谷（普通）、长弓溪谷（机密）、航天基地（绝密）的物资点、出生点、撤离点及首领坐标。</div>
+                      </div>
+                      
+                    </div>
+                    <div class="abcter btn-close-pop img_btn_close"></div>
+                  </div>
+            
+                 </div>
+
+                 <!-- 外链 -->
+                  <div class="bottom-bar">
+                    <div class="bottom-bar-bg"></div>
+                    <div class="bottom-bar-ctn">
+                      <div class="bottom-bar-list tg-sns" id="tg-sns">
+                        <!-- <div class="bottom-bar-item qq"></div>
+                        <div class="bottom-bar-item kj"></div>
+                        <div class="bottom-bar-item wb"></div>
+                        <div class="bottom-bar-item wx"></div> -->
+                      </div>
+                      <div class="bottom-bar-item wx">
+                        <div class="abcter wx-code">
+                          <img src="<%= require('./src/img/code.png') %>" alt="">
+                          <div class="abcter code-tips">手机微信扫描二维码<br/>点击右上角 ··· 按钮<br/>分享到微信好友或微信朋友圈</div>
+                        </div>
+                      </div>
+                      <div class="bottom-bar-item lj"></div>
+                      
+                    </div>
+                  </div>
+
+                  <!-- <div id="tg-sns"></div> -->
+
+
+                  <div class="abcter m-toast">功能开发中，敬请期待</div>
+                  <div class="abcter toast-copy">成功复制到剪切板</div>
+              <% if (process.env.NODE_ENV !=='handover' ) { %>
+                <!-- 弹窗测试入口 -->
+                <div class="abs btn_test_rap"></div>
+              <% } %>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  
+
+  <script>
+        window.isSupportWebp = false;//是否支持
+        (function() {
+            var img = new Image(); 
+            function getResult(event) {
+                //如果进入加载且图片宽度为1(通过图片宽度值判断图片是否可以显示)
+                window.isSupportWebp = event && event.type === 'load' ? img.width == 1 : false;
+            }
+            img.onerror = getResult;
+            img.onload = getResult;
+            img.src = 'data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA='; //一像素图片
+        })();
+  </script>
+
+
+  <script src="<%= require('./src/js/lib/jquery-1.11.3.min.js') %>"></script>
+  <script src="//ossweb-img.qq.com/images/js/PTT/ping_tcss_tgideas_https_min.js"></script>
+  <script src="https://ossweb-img.qq.com/images/js/eas/eas.js"></script>
+  <script>
+    var warMapInfo;
+    var setSite = { //设置网站属性
+        siteType: "os", //必填项:"os"代表是官网，如果不是，则填写actName例如a20160701xxx
+        pageType: "index", //必填项:本页面的定位；按照页面含义填写例如main||list||detail||download||share||page1||pageN
+        pageName: "首页", //必填项:页面中文名
+        osact: 0, //选填项:是否是官网专题(在官网运营的专题)boolean；默认是0；可以在链接上加入参数osact=1来灵活设置
+        ingame: 0, //选填项:是否投放在游戏APP内boolean；默认是0；可以在链接上加入参数ingame=1来灵活设置
+        stayTime: 0 //选填项:是否需要统计停留时长boolean；默认是0
+    };
+    if (typeof (pgvMain) == 'function') pgvMain();
+  </script>
+  <script src="<%= require('./src/js/lib/floor/daba_floor.js') %>"></script>
+  <script src="<%= require('./src/js/lib/floor/cgxg_floor.js') %>"></script>
+  <script src="<%= require('./src/js/lib/floor/bks_floor.js') %>"></script>
+  <script src="<%= require('./src/js/lib/floor/cxjy_floor.js') %>"></script>
+  <script src="<%= require('./src/js/lib/map_article.js') %>"></script>
+  <script src="<%= require('./src/js/lib/map_cgxg.js') %>"></script>
+  <script src="<%= require('./src/js/lib/map_htjd.js') %>"></script>
+  <script src="<%= require('./src/js/lib/map_bks.js') %>"></script>
+  <script src="<%= require('./src/js/lib/map_cxjy.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_gc.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_jq.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_pc.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_ljd.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_qhz.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_df.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_dg.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_hdz.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_jzt.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_dc.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_yz.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_wmsyh.js') %>"></script>
+  <script src="<%= require('./src/js/lib/floor/az3_floor.js') %>"></script>
+  <script src="<%= require('./src/js/lib/map_az3.js') %>"></script>
+  <script src="<%= require('./src/js/lib/dzc/map_dsc.js') %>"></script>
+   
+
+
+
+  <script src="<%= require('./src/js/lib/swiper-bundle.min.js') %>"></script>
+  <script src="<%= require('./src/js/lib/main.js') %>"></script>
+
+  <script src="//ossweb-img.qq.com/images/js/share/share-min.js" charset="gb2312"></script>
+  <script>
+      TGshare({
+        iconSize : 16, //分享图标的大小,16为16px X 16px，24为24px X 24px
+        snsModule : ['qq', 'qzone'],
+        //分享类型 wechat,qq,qzone,weibo,pengyou,sina,douban,kaixin,renren
+        //默认全部加载
+        title : '腾讯游戏 - 用心创造快乐',
+        //需要自定义标题时才用到，默认拉取页面标题
+        url : '',
+        //需要自定义页面url时才用到，默认拉取页面url
+        picUrl : 'https://game.gtimg.cn/images/cf/cp/a20240710carnival/hit_pop_0.1c200ba1.png',
+        //需要自定义主题图片才用到，默认拉取页面中第一张图片
+        snsID :'tg-sns',//自定义SNS容器ID
+        isWindow : true, //分享打开类型，true为弹窗打开，false为新页面打开，默认为弹窗打开
+        tcss : false //是否添加点击流，true为添加，false为不添加，默认添加
+    })
+
+    EAS && EAS.SendClick({ e_c: 'yxzj.a20240124yearlimit.clickShare', openid:'' ,uin:''})
+</script>
+
+  <% if (process.env.NODE_ENV==='handover' ) { %>
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+      <% var jsFile=htmlWebpackPlugin.files.chunks[chunk].entry; %>
+        <script type="text/javascript" src="<%= jsFile %>"></script>
+    <% } %>
+  <% } else { %>
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+      <% var jsFile=htmlWebpackPlugin.files.chunks[chunk].entry.substr(htmlWebpackPlugin.files.publicPath.length);%>
+      <script type="text/javascript" src="<%= jsFile %>"></script>
+    <% } %>
+  <% } %>
+</body>
+
+</html>

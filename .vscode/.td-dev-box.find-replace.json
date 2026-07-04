@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "profiles": [
+    {
+      "id": "grp-1763274655414",
+      "name": "组 1",
+      "enabled": true,
+      "find": "../../img/",
+      "replace": " https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/",
+      "options": {
+        "regex": false,
+        "caseSensitive": false,
+        "wholeWord": false
+      },
+      "files": [
+        "/Users/wy/myDoc/myProject/trae_地图站/tx-sjz-aqz-zh-20240529/pc/src/js/lib/main.js"
+      ],
+      "lastRunAt": null
+    }
+  ],
+  "recentFiles": [
+    "/Users/wy/myDoc/myProject/trae_地图站/tx-sjz-aqz-zh-20240529/pc/src/js/lib/main.js"
+  ]
+}

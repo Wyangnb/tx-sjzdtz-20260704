@@ -1,0 +1,203 @@
+.keyframes (@name, @frames) {
+    @-moz-keyframes @name { @frames(); }
+    @-ms-keyframes @name { @frames();}
+    @-o-keyframes @name { @frames(); }
+    @keyframes @name { @frames(); }
+}
+
+.keyframes(fadein, {
+    0% {
+       opacity: 0;
+    }
+    100% {
+       opacity: 1;
+    }
+    
+});
+
+.keyframes(rightLineAni, {
+    0% {
+        opacity: 0;
+        transform: translate3d(-300px, -37px, 0) rotate(180deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0px, -37px, 0) rotate(180deg);
+    }
+    
+});
+
+.keyframes(leftLineAni, {
+    0% {
+        opacity: 0;
+        transform: translate3d(300px, -40px, 0);
+    }
+    1%{
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0, -40px, 0);
+    }
+    
+});
+
+.keyframes(rightWidthAni, {
+    0% {
+        opacity: 0;
+        transform:  rotateY(90deg);
+    }
+    1%{
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        transform:  rotateY(0deg);
+    }
+    
+});
+
+.keyframes(rightBtnCtnAni, {
+    0% {
+        transform:  rotateY(90deg);
+    }
+    20%{
+        opacity: 0;
+    }
+    30%{
+        opacity: 1;
+    }
+    40%{
+        opacity: 0;
+    }
+    50%{
+        opacity: 1;
+    }
+    60%{
+        opacity: 0;
+    }
+    70%{
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        transform:  rotateY(0deg);
+    }
+});
+
+.keyframes(flicker, {
+    0% {
+        opacity: 1
+    }
+
+    10% {
+        opacity: 1
+    }
+
+    15% {
+        opacity: .2
+    }
+
+    20% {
+        opacity: 1
+    }
+
+    30% {
+        opacity: 1
+    }
+
+    35% {
+        opacity: .4
+    }
+
+    40% {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 1
+    }
+
+    55% {
+        opacity: .6
+    }
+
+    60% {
+        opacity: 1
+    }
+
+    to {
+        opacity: 1
+    }
+});
+
+.keyframes(heightAni, {
+    0% {
+        height: 0%;
+    }
+    
+    100% {
+       height: 100%
+    }
+});
+
+.keyframes(part2BdAni, {
+    0% {
+        width: 0px;
+    }
+    
+    100% {
+        width: 472px/2;
+    }
+});
+.keyframes(part2Text1Ani, {
+    0% {
+        width: 0px;
+    }
+    
+    100% {
+        width: 100%;
+    }
+});
+.keyframes(part2Text2Ani, {
+    0% {
+       transform: translateY(-100%);
+    }
+    
+    100% {
+        transform: translateY(0%);
+    }
+});
+
+.keyframes(nav_active_1, {
+    0% {
+        transform: translateY(150px) scale(1);
+    }
+    50%{
+        transform: translateY(150px) scale(1);
+    }
+    
+    100% {
+        transform: translateY(150px);
+    }
+});
+
+.keyframes(nav_active_2, {
+    0% {
+       transform: translateY(-100%);
+    }
+    
+    100% {
+        transform: translateY(0%);
+    }
+});
+
+.keyframes(nav_active_3, {
+    0% {
+       transform: translateY(-100%);
+    }
+    
+    100% {
+        transform: translateY(0%);
+    }
+});

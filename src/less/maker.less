@@ -1,0 +1,49 @@
+// POI
+// .POI{
+//     background-color: white;
+// }
+// // 行动接取站
+// .move{
+//     background-color: chocolate;
+// }
+// // 物资
+// .article{
+//     background-color: aqua;
+// }
+// // 撤退点
+// .retreat{
+//     background-color:green;
+// }
+// // 复活点
+// .revive{
+//     background-color: red;
+// }
+
+.leaflet-marker-icon{
+    .icon-name{
+        font-size: 12px;
+        color: white;
+        white-space: nowrap;
+        // transform: translate3d(-50%, -50%, 0);
+        transform: translateX(-50%);
+    }
+}
+
+.leaflet-container .leaflet-marker-pane img{
+    &:hover{
+        transform: scale(1.2);
+    }
+}
+
+.leaflet-control-zoomslider{
+    position: absolute;
+    right: 50px;
+    bottom: 50px;
+}
+// 控件
+.leaflet-top{
+    bottom: 0px !important;
+}
+.leaflet-left{
+    right: 0px !important;
+}
