@@ -4511,16 +4511,27 @@ body::-webkit-scrollbar {
   position: relative;
   transition: 0.25s;
 }
-.m-index .nav-ctn .nav-type-list .nav-wz {
+.m-index .nav-ctn .nav-type-list .nav-wz,
+.m-index .nav-ctn .nav-type-list .nav-mode,
+.m-index .nav-ctn .nav-type-list .nav-my,
+.m-index .nav-ctn .nav-type-list .nav-xxj {
   display: flex;
   width: 3.3rem;
   overflow: hidden;
   flex-wrap: wrap;
   align-content: flex-start;
 }
-.m-index .nav-ctn .nav-type-list .nav-wz.close {
+.m-index .nav-ctn .nav-type-list .nav-wz.close,
+.m-index .nav-ctn .nav-type-list .nav-mode.close,
+.m-index .nav-ctn .nav-type-list .nav-my.close,
+.m-index .nav-ctn .nav-type-list .nav-xxj.close {
   transition: 0.25s;
   height: 0.3rem;
+}
+.m-index .nav-ctn .nav-type-list .nav-mode,
+.m-index .nav-ctn .nav-type-list .nav-my,
+.m-index .nav-ctn .nav-type-list .nav-xxj {
+  margin-top: 0.1rem;
 }
 .m-index .nav-ctn .nav-type-list .nav-cld {
   margin-top: 0.1rem;

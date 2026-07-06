@@ -173,6 +173,29 @@ var visibleMarker2 = {
         markers: {}
     }
 };
+
+function normalizeMarkerMode(mode) {
+    return typeof mode === 'string' ? mode.trim() : '';
+}
+
+function getMarkerMode(item) {
+   var itemMode = normalizeMarkerMode(item?.mode);
+    if (itemMode) {
+        return itemMode;
+    }
+    var pickupMode = normalizeMarkerMode(item?.['拾取条件']);
+    if (pickupMode === '泄露区刷新' || pickupMode === '需要密钥才能开启') {
+        return pickupMode;
+    }
+    return '';
+}
+
+function getMarkerFilterKey(item) {
+    if (!item?.name) return '';
+    var mode = getMarkerMode(item);
+    return mode ? `${item.name}__${mode}` : `${item.name}__default`;
+}
+
 var hoverMarker = {};
 var clickMarker = {}
 var ciLayer = null;
@@ -279,6 +302,29 @@ function getMapPos (posX, posY) {
         return {x: bj - (mapScaleInfo.centerX - x ) / xB2, y: -bj - (mapScaleInfo.centerY + y ) / yB2}
     }
     // return {x: 127, y: -68}
+}
+
+function getSourceMapPos(lat, lng) {
+    var bj = isFloor ? mapScaleInfo.floorInfo.info.bj : 128
+    var xB2 = mapScaleInfo.width / bj
+    var yB2 = mapScaleInfo.height / bj
+
+    if (currLayer.name.indexOf('cgxg') !== -1 || currLayer.name === 'map_yc2' || currLayer.name === 'map_yc' || mapScaleInfo.rotate == 90) {
+        return {
+            x: mapScaleInfo.centerX - (lat + bj) * xB2,
+            y: (bj - lng) * yB2 - mapScaleInfo.centerY
+        }
+    } else if (mapScaleInfo.rotate === -90) {
+        return {
+            x: mapScaleInfo.centerX + (lat + bj) * xB2,
+            y: (lng - bj) * yB2 - mapScaleInfo.centerY
+        }
+    } else {
+        return {
+            x: mapScaleInfo.centerX + (lng - bj) * xB2,
+            y: -(lat + bj) * yB2 - mapScaleInfo.centerY
+        }
+    }
 }
 
 new Page().init();
@@ -633,17 +679,18 @@ var pointsOfInterest = {
         $.each(arr, function (index, item) {
             var visible = false;
             var that = this;
-            if (from === "filter" && visibleMarker[item.name]) visible = true;
-            if (from === "filter" && visibleMarker['出生点'] && item.type === 'revive') {
+            var markerFilterKey = getMarkerFilterKey(item);
+            if (from === "filter" && visibleMarker[markerFilterKey]) visible = true;
+            if (from === "filter" && visibleMarker[getMarkerFilterKey({ name: '出生点' })] && item.type === 'revive') {
                 visible = true;
             }
-            if (from === "filter" && visibleMarker['首领'] && item.type === 'Boss') {
+            if (from === "filter" && visibleMarker[getMarkerFilterKey({ name: '首领' })] && item.type === 'Boss') {
                 visible = true;
             }
-            if (from === "filter" && (visibleMarker['行动接取站']) && item.type === 'move') {
+            if (from === "filter" && visibleMarker[getMarkerFilterKey({ name: '行动接取站' })] && item.type === 'move') {
                 visible = true;
             }
-            if (from === "filter" && (visibleMarker['高价值']) && item.type === 'move') {
+            if (from === "filter" && visibleMarker[getMarkerFilterKey({ name: '高价值' })] && item.type === 'move') {
                 visible = true;
             }
             // // console.log(this);
@@ -847,7 +894,7 @@ var pointsOfInterest = {
                     // // console.log(element);
                     // if (element.num === 0) return;
                     
-                    visibleMarker[element.name] = (type.indexOf('all') > 0 ? true : false);
+                    visibleMarker[getMarkerFilterKey(element)] = (type.indexOf('all') > 0 ? true : false);
                 }
             }
             saveMarker = Object.assign({}, visibleMarker);
@@ -997,6 +1044,15 @@ var init = function () {
 
 
     map.on('click', function(e) {
+       var sourcePos = getSourceMapPos(e.latlng.lat, e.latlng.lng);
+       console.log('map click position', {
+           x: Math.round(sourcePos.x),
+           y: Math.round(sourcePos.y),
+           lat: e.latlng.lat,
+           lng: e.latlng.lng,
+           isFloor: isFloor,
+           layer: currLayer.name
+       });
        // console.log(currClickMarker);
        if (currClickMarker) {
         currClickMarker.setIcon(currClickMarker.myIcon)
@@ -1378,54 +1434,11 @@ function enterFloorMode(e) {
 // 进入楼层保留选项
 function enterFloorSave () {
     // if (!isAll) return;
-    let navType = {
-        '保险箱': 'nav_bxx',
-        '小保险箱': 'nav_xbxx',
-        '服务器': 'nav_fwq',
-        '电脑': 'nav_dn',
-        '电脑机箱': 'nav_dnjx',
-        '武器箱': 'nav_wqx',
-        '大武器箱': 'nav_dwqx',
-        '弹药箱': 'nav_dyx',
-        '工具柜': 'nav_gjg',
-        '收纳盒': 'nav_dgjx',
-        // '一件衣服': 'nav_yf_s',
-        '一件衣服': 'nav_yf',
-        '军用医疗包': 'nav_ylb',
-        '医疗物资堆': 'nav_ylwzd',
-        '旅行包': 'nav_lxd',
-        '手提箱': 'nav_stx',
-        '储物柜': 'nav_cwg',
-        '高级储物箱': 'nav_gjcwx',
-        '抽屉柜': 'nav_ctg',
-        '登山包': 'nav_dsb',
-        '快递箱': 'nav_kdx',
-        '航空储物箱': 'nav_hkcwx',
-        '垃圾桶': 'nav_ljx',
-        '搅拌车': 'nav_snc',
-        '野外物资箱': 'nav_ywwzx',
-        '鸟窝': 'nav_nw',
-        '藏匿物': 'nav_cnw',
-        '高级旅行箱': 'nav_xlx',
-        '出生点': 'nav_csd',
-        '付费撤离点': 'nav_ffcld',
-        '常规撤离点': 'nav_cgcld',
-        '概率撤离点': 'nav_sjcld',
-        '条件撤离点': 'nav_tjcld',
-        '电梯撤离点': 'nav_dtcld',
-        '滑索撤离点': 'nav_hscld',
-        '火箭撤离点': 'nav_htcld',
-        '行动撤离点': 'nav_xdcld',
-        '首领': 'nav_boss',
-        
-    }
     console.log('enterFloorSave', saveMarker);
     for (const key in saveMarker) {
         if (saveMarker[key]) {
             console.log(1111, key);
-            // console.log(navType[key]);
-            
-            !visibleMarker[key] ? $(`.nav-list-${navType[key]}`).addClass('active'): $(`.${navType[key]}`).removeClass('active')
+            $(`.nav-list-item[data-filter-key="${key}"]`).addClass('active')
             toggleVisible(key, currLeftNav);
         }
     }
@@ -1561,10 +1574,14 @@ var initNav = function () {
 
 var renderNavTypeList = function (list, navIndex = 0) {
     list = Array.isArray(list) ? list : [];
+    const seenFilterKeys = new Set();
     
     // 定义分类容器
     const categories = {
         wz: { title: '物资点', html: '' },
+        mode: { title: '泄露区物资点', html: '' },
+        my: { title: '密钥刷新点', html: '' },
+        xxj: { title: '洗消间点', html: '' },
         csd: { title: '出生点', html: '' },
         cld: { title: '撤离点', html: '' },
         sl: { title: '首领', html: '' },
@@ -1579,11 +1596,14 @@ var renderNavTypeList = function (list, navIndex = 0) {
 
     // 分类处理函数
     function addToCategory(item, index, category) {
+        if (item.num === 0) return;
         // 获取该item.name对应的额外类名
         const extraClass = nameClassMap[item.name] || '';
+        const filterKey = getMarkerFilterKey(item);
+        const markerMode = getMarkerMode(item);
         
         categories[category].html += `
-            <div class="nav-list-item nav-list-item-${index} nav-list-${item.icon} ${visibleMarker[item.name] ? 'active': ''} ${extraClass} ${item.num === 0? 'hide': ''}" data-index="${index}" data-icon="${item.icon}" data-name="${item.name}">
+            <div class="nav-list-item nav-list-item-${index} nav-list-${item.icon} ${visibleMarker[filterKey] ? 'active': ''} ${extraClass} ${item.num === 0? 'hide': ''}" data-index="${index}" data-icon="${item.icon}" data-name="${item.name}" data-mode="${markerMode}" data-filter-key="${filterKey}">
                 <div class="wz-bg">
                     <div class="wz-icon img_${item.icon} "></div>
                     <div class="wz-num ${item.num === 1? 'hides': ''}">${item.num}</div>
@@ -1595,9 +1615,18 @@ var renderNavTypeList = function (list, navIndex = 0) {
     // 遍历列表并分类
     list.forEach((item, index) => {
         if (item.name === '行动接取站' || item.name === '高价值接取站') return;
+        const filterKey = getMarkerFilterKey(item);
+        if (seenFilterKeys.has(filterKey)) return;
+        seenFilterKeys.add(filterKey);
         
         if (item.name.indexOf('撤离点') !== -1) {
             addToCategory(item, index, 'cld');
+        } else if (item?.mode?.indexOf('泄露区') > -1){
+            addToCategory(item, index, 'mode');
+        } else if (item?.mode?.indexOf('密钥') > -1){
+            addToCategory(item, index, 'my');
+        } else if (item?.mode?.indexOf('洗消间点') > -1){
+            addToCategory(item, index, 'xxj');
         } else if (item.name.indexOf('出生点') !== -1) {
             addToCategory(item, index, 'csd');
         } else if (item.name.indexOf('首领') !== -1) {
@@ -1620,7 +1649,7 @@ var renderNavTypeList = function (list, navIndex = 0) {
         } else {
             addToCategory(item, index, 'wz');
         }
-        !typeListInit &&  (visibleMarker[item.name] = false)
+        !typeListInit &&  (visibleMarker[getMarkerFilterKey(item)] = false)
     });
 
     $('.nav-option-ctn').attr('data-map', currMap)
@@ -1678,21 +1707,29 @@ function selectmarker(name) {
     };
     // console.log('name', name, allNavList);
     var markerList = []
+    var seenFilterKeys = new Set();
     var html = '';
     for (let index = 0; index < allNavList[0].typeList.length; index++) {
         const element = allNavList[0].typeList[index];
+        const filterKey = getMarkerFilterKey(element);
         // console.log(element);
-        fuzzyMatch(element.name, name) && markerList.push(element)
+        if (fuzzyMatch(element.name, name) && !seenFilterKeys.has(filterKey)) {
+            seenFilterKeys.add(filterKey);
+            markerList.push(element)
+        }
     }
     
     // console.log('markerList', markerList);
     markerList.length && markerList.forEach(function (item, index) {
+        if (item.num === 0) return;
         // 获取该item.name对应的额外类名
         const extraClass = nameClassMap[item.name] || '';
+        const filterKey = getMarkerFilterKey(item);
+        const markerMode = getMarkerMode(item);
         
         // // console.log(visibleMarker[item.name], item.name);
         html+=`
-        <div class="nav-list-item nav-list-item-${index} nav-list-${item.icon} ${visibleMarker[item.name] ? 'active': ''} ${extraClass} ${item.num === 0? 'hide': ''}" data-index="${index}" data-icon="${item.icon}" data-name="${item.name}">
+        <div class="nav-list-item nav-list-item-${index} nav-list-${item.icon} ${visibleMarker[filterKey] ? 'active': ''} ${extraClass} ${item.num === 0? 'hide': ''}" data-index="${index}" data-icon="${item.icon}" data-name="${item.name}" data-mode="${markerMode}" data-filter-key="${filterKey}">
             <div class="wz-bg">
                 <div class="wz-icon img_${item.icon}"></div>
                 <div class="wz-num">${item.num}</div>
@@ -1714,9 +1751,10 @@ function bindOptionEvent () {
     
     // 选择标签
     NavListItem.on('click', function (e) {
-        var index = $(e.target).attr('data-index');
-        var name = $(e.target).attr('data-name');
-        var icon = $(e.target).attr('data-icon')
+        var index = $(this).attr('data-index');
+        var name = $(this).attr('data-name');
+        var icon = $(this).attr('data-icon')
+        var filterKey = $(this).attr('data-filter-key') || name;
         // console.log('index', $(e.target).attr('data-icon'));
         NavCliciIndex++;
         currNavIcon = name;
@@ -1726,8 +1764,8 @@ function bindOptionEvent () {
         //     !visibleMarker[name] ? $(this).addClass('active'): $(this).removeClass('active')
         //     toggleVisible(name, currLeftNav);
         // }
-        !visibleMarker[name] ? $(this).addClass('active'): $(this).removeClass('active')
-        toggleVisible(name, currLeftNav);
+        !visibleMarker[filterKey] ? $(this).addClass('active'): $(this).removeClass('active')
+        toggleVisible(filterKey, currLeftNav);
         saveMarker = Object.assign({}, visibleMarker);
         
         let chooseNum = $('.nav-type-list').find('.active').length;
@@ -3141,6 +3179,83 @@ function changeMapLv(type) {
             layer: 'map_az3',
             needRemove: true,
         },
+         '51_1_1F': {
+            info: az3Info,
+            nav: az3Info.floorInfo.navList2_firest1,
+            navInfo: az3Info.floorInfo.navList2_firest1,
+            icons: az3Info.floorInfo.mapArticle2_first1,
+            poi: selectRegion_az3,
+            name: 'RBMK反应堆',
+            level: '机密',
+            layer: 'az3_1_1f',
+            needRemove: true
+        },
+         '51_1_2F': {
+            info: az3Info,
+            nav: az3Info.floorInfo.navList2_second1,
+            navInfo: az3Info.floorInfo.navList2_second1,
+            icons: az3Info.floorInfo.mapArticle2_second1,
+            poi: selectRegion_az3,
+            name: 'RBMK反应堆',
+            level: '机密',
+            layer: 'az3_1_2f',
+            needRemove: true
+        },
+         '51_2_1F': {
+            info: az3Info,
+            nav: az3Info.floorInfo.navList2_firest2,
+            navInfo: az3Info.floorInfo.navList2_firest2,
+            icons: az3Info.floorInfo.mapArticle2_first2,
+            poi: selectRegion_az3,
+            name: '老科学院',
+            level: '机密',
+            layer: 'az3_2_1f',
+            needRemove: true
+        },
+         '51_2_2F': {
+            info: az3Info,
+            nav: az3Info.floorInfo.navList2_second2,
+            navInfo: az3Info.floorInfo.navList2_second2,
+            icons: az3Info.floorInfo.mapArticle2_second2,
+            poi: selectRegion_az3,
+            name: '老科学院',
+            level: '机密',
+            layer: 'az3_2_2f',
+            needRemove: true
+        },
+        '51_1_3F': {
+            info: az3Info,
+            nav: az3Info.floorInfo.navList2_firest3,
+            navInfo: az3Info.floorInfo.navList2_firest3,
+            icons: az3Info.floorInfo.mapArticle2_first3,
+            poi: selectRegion_az3,
+            name: 'RBMK反应堆',
+            level: '机密',
+            layer: 'az3_3_1f',
+            needRemove: true
+        },
+         '51_3_2F': {
+            info: az3Info,
+            nav: az3Info.floorInfo.navList2_second3,
+            navInfo: az3Info.floorInfo.navList2_second3,
+            icons: az3Info.floorInfo.mapArticle2_second3,
+            poi: selectRegion_az3,
+            name: '压水堆',
+            level: '机密',
+            layer: 'az3_3_2f',
+            needRemove: true
+        },
+         '51_1_3F': {
+            info: az3Info,
+             nav: az3Info.floorInfo.navList2_three1,
+            navInfo: az3Info.floorInfo.navList2_three1,
+            icons: az3Info.floorInfo.mapArticle2_three1,
+            poi: selectRegion_az3,
+            name: '压水堆',
+            level: '机密',
+            layer: 'az3_1_3f',
+            needRemove: true
+        },
     };
 
     // 获取当前地图配置
@@ -3470,7 +3585,7 @@ function warInit (mapName, type, isBorder = false) {
             }
             myIcon.name = element.name;
             myIcon.icon = icon;
-            visibleMarker[element.name] = true;
+            visibleMarker[getMarkerFilterKey(element)] = true;
             $(`.nav-list-nav${icon.substring(1)}`).addClass('active')
             if (element['激活条件']) {
                 var popupHtml =`
@@ -3609,7 +3724,7 @@ function testWarInit (list) {
                 }
                 myIcon.name = element.name;
                 myIcon.icon = icon;
-                visibleMarker[element.name] = true;
+                visibleMarker[getMarkerFilterKey(element)] = true;
                 $(`.nav-list-nav${icon.substring(1)}`).addClass('active')
                 if (element['激活条件']) {
                     var popupHtml =`
