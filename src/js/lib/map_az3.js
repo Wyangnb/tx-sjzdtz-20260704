@@ -361,19 +361,20 @@ var navList_az3 = [
     "icon": "nav_gyjscwx"
   },
   {
-    "name": "放射性储物箱",
-    "lang": "lang_mt",
-    "idType": 25,
-    "num": 11,
-    "icon": "nav_fsxcwx"
-  },
-  {
     "name": "屏蔽箱",
     "lang": "lang_mt",
     "idType": 25,
     "num": 17,
     "icon": "nav_pbx"
   },
+  {
+    "name": "放射性储物箱",
+    "lang": "lang_mt",
+    "idType": 25,
+    "num": 11,
+    "icon": "nav_fsxcwx"
+  },
+  
   {
     "name": "辐射废料箱",
     "lang": "lang_mt",
@@ -549,6 +550,14 @@ var navList_az3 = [
     "mode": "泄露区刷新"
   },
   {
+    "name": "工业金属储物箱",
+    "lang": "lang_mt",
+    "idType": 25,
+    "num": 8,
+    "icon": "nav_gyjscwx",
+    "mode": "泄露区刷新"
+  },
+  {
     "name": "快递箱",
     "lang": "lang_kdx",
     "idType": 21,
@@ -564,14 +573,7 @@ var navList_az3 = [
     "icon": "nav_ywwzx",
     "mode": "泄露区刷新"
   },
-  {
-    "name": "工业金属储物箱",
-    "lang": "lang_mt",
-    "idType": 25,
-    "num": 8,
-    "icon": "nav_gyjscwx",
-    "mode": "泄露区刷新"
-  },
+  
   {
     "name": "放射性储物箱",
     "lang": "lang_mt",
@@ -580,142 +582,18 @@ var navList_az3 = [
     "icon": "nav_fsxcwx",
     "mode": "泄露区刷新"
   },
-  {
-    "name": "保险箱",
-    "lang": "lang_bxg",
-    "idType": 1,
-    "num": 43,
-    "icon": "nav_bxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "小保险箱",
-    "lang": "lang_xbxx",
-    "idType": 2,
-    "num": 34,
-    "icon": "nav_xbxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "服务器",
-    "lang": "lang_fwq",
-    "idType": 3,
-    "num": 18,
-    "icon": "nav_fwq",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "电脑机箱",
-    "lang": "lang_dnjx",
-    "idType": 5,
-    "num": 16,
-    "icon": "nav_dnjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "工具柜",
-    "lang": "lang_gjg",
-    "idType": 9,
-    "num": 26,
-    "icon": "nav_gjg",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "收纳盒",
-    "lang": "lang_dgjh",
-    "idType": 10,
-    "num": 17,
-    "icon": "nav_dgjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "一件衣服",
-    "lang": "lang_yf",
-    "idType": 12,
-    "num": 2,
-    "icon": "nav_yf",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "军用医疗包",
-    "lang": "lang_ylb",
-    "idType": 13,
-    "num": 1,
-    "icon": "nav_ylb",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "医疗物资堆",
-    "lang": "lang_ylwzd",
-    "idType": 14,
-    "num": 1,
-    "icon": "nav_ylwzd",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "储物柜",
-    "lang": "lang_cwg",
-    "idType": 17,
-    "num": 1,
-    "icon": "nav_cwg",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "高级储物箱",
-    "lang": "lang_gjcwx",
-    "idType": 18,
-    "num": 23,
-    "icon": "nav_gjcwx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "抽屉柜",
-    "lang": "lang_ctg",
-    "idType": 19,
-    "num": 27,
-    "icon": "nav_ctg",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "登山包",
-    "lang": "lang_dsb",
-    "idType": 20,
-    "num": 14,
-    "icon": "nav_dsb",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "快递箱",
-    "lang": "lang_kdx",
-    "idType": 21,
-    "num": 2,
-    "icon": "nav_kdx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "工业金属储物箱",
-    "lang": "lang_mt",
-    "idType": 25,
-    "num": 14,
-    "icon": "nav_gyjscwx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "屏蔽箱",
-    "lang": "lang_mt",
-    "idType": 25,
-    "num": 11,
-    "icon": "nav_pbx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "药品保温箱",
-    "lang": "lang_mt",
-    "idType": 25,
-    "num": 3,
-    "icon": "nav_ypbwx",
-    "mode": "需要密钥才能开启"
-  },
+{
+                name: '密钥',
+                idType: 26,
+                num: 23,
+                icon: 'nav_my',
+            },
+            {
+                name: '清洗间',
+                idType: 26,
+                num: 13,
+                icon: 'nav_qxj',
+            },
   
             {
                 name: '出生点',
@@ -1000,19 +878,20 @@ var navListInfo_az3 = [
     "icon": "nav_gyjscwx"
   },
   {
-    "name": "放射性储物箱",
-    "lang": "lang_mt",
-    "idType": 25,
-    "num": 11,
-    "icon": "nav_fsxcwx"
-  },
-  {
     "name": "屏蔽箱",
     "lang": "lang_mt",
     "idType": 25,
     "num": 17,
     "icon": "nav_pbx"
   },
+  {
+    "name": "放射性储物箱",
+    "lang": "lang_mt",
+    "idType": 25,
+    "num": 11,
+    "icon": "nav_fsxcwx"
+  },
+  
   {
     "name": "辐射废料箱",
     "lang": "lang_mt",
@@ -17749,6 +17628,321 @@ var mapArticle_az3 = [
     "x": 198136.8281,
     "y": "-242283.7813"
   },
+  {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "189738.484375",
+        "y": "-230047.046875",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "186308.968750",
+        "y": "-241869.578125",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "191637.718750",
+        "y": "-225051.031250",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "191534.125000",
+        "y": "-238569.328125",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "192648.875000",
+        "y": "-230302.531250",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "218658.859375",
+        "y": "-230567.796875",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "213564.937500",
+        "y": "-241038.281250",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "210136.625000",
+        "y": "-233541.218750",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "213802.937500",
+        "y": "-202894.812500",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "211572.625000",
+        "y": "-203159.171875",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "215382.843750",
+        "y": "-205748.109375",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "230781.250000",
+        "y": "-204478.281250",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "221720.906250",
+        "y": "-207097.375000",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "227792.921875",
+        "y": "-208260.015625",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "197235.828125",
+        "y": "-160110.234375",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "204138.562500",
+        "y": "-165330.703125",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "208430.015625",
+        "y": "-162059.312500",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "225478.968750",
+        "y": "-174522.656250",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "233988.921875",
+        "y": "-166533.593750",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "213463.812500",
+        "y": "-172652.437500",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "210834.968750",
+        "y": "-172329.234375",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "242057.312500",
+        "y": "-172571.500000",
+        "z": ""
+    },
+    {
+        "name": "密钥",
+        "type": "revive",
+        "icon": "my",
+        "x": "225673.125000",
+        "y": "-173865.093750",
+        "z": ""
+    },
+
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "176010.781250",
+        "y": "-213429.984375",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "201223.937500",
+        "y": "-254271.250000",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "193504.609375",
+        "y": "-164250.703125",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "178533.203125",
+        "y": "-231131.921875",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "180293.906250",
+        "y": "-249005.953125",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "201683.250000",
+        "y": "-228410.765625",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "213558.359375",
+        "y": "-159252.312500",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "223894.406250",
+        "y": "-164843.703125",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "209061.140625",
+        "y": "-178213.296875",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "203663.921875",
+        "y": "-191672.968750",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "218115.500000",
+        "y": "-201775.406250",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "220321.109375",
+        "y": "-207289.265625",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "209239.062500",
+        "y": "-235952.218750",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "227799.000000",
+        "y": "-186912.265625",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "239805.937500",
+        "y": "-176325.359375",
+        "z": ""
+    },
+    {
+        "name": "清洗间",
+        "type": "revive",
+        "icon": "qxj",
+        "x": "230552.062500",
+        "y": "-229977.203125",
+        "z": ""
+    },
+
+    
     {
         "name": "出生点",
         "type": "revive",

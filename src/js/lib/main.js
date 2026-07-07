@@ -1581,7 +1581,7 @@ var renderNavTypeList = function (list, navIndex = 0) {
         wz: { title: '物资点', html: '' },
         mode: { title: '泄露区物资点', html: '' },
         my: { title: '密钥刷新点', html: '' },
-        xxj: { title: '洗消间点', html: '' },
+        xxj: { title: '清洗间点位', html: '' },
         csd: { title: '出生点', html: '' },
         cld: { title: '撤离点', html: '' },
         sl: { title: '首领', html: '' },
@@ -1623,9 +1623,9 @@ var renderNavTypeList = function (list, navIndex = 0) {
             addToCategory(item, index, 'cld');
         } else if (item?.mode?.indexOf('泄露区') > -1){
             addToCategory(item, index, 'mode');
-        } else if (item?.mode?.indexOf('密钥') > -1){
+        } else if (item?.name?.indexOf('密钥') > -1){
             addToCategory(item, index, 'my');
-        } else if (item?.mode?.indexOf('洗消间点') > -1){
+        } else if (item?.name?.indexOf('清洗间') > -1){
             addToCategory(item, index, 'xxj');
         } else if (item.name.indexOf('出生点') !== -1) {
             addToCategory(item, index, 'csd');
