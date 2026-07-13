@@ -717,10 +717,12 @@ var pointsOfInterest = {
                     <div class="btn-floor"${floorButtonAttrs}></div>
                     <div class="address">地点：<span>${item['自定义区域']}</span></div>
                     <div class="open-text ${(!item['拾取条件'] || item['拾取条件'] === '') ? 'hide': ''}">开启条件：<span>${item['拾取条件']}</span></div>
+                    <div class="open-text ${(!item['出现条件'] || item['出现条件'] === '') ? 'hide': ''}">出现条件：<span>${item['出现条件']}</span></div>
                     <div class="open-text ${(!item['撤离条件'] || item['撤离条件'] === '') ? 'hide': ''}">撤离条件：<span>${item['撤离条件']}</span></div>` : 
                     ` <div class="name ${(this.name === '[地狱黑鲨]雷斯—雷达站摧毁者' || this.name === '[地狱黑鲨]雷斯—酒店守卫者') && 'max'}">${this?.sub_name ? this.sub_name : this.name}</div>
                     <div class="address">地点：<span>${item['自定义区域']}</span></div>
                     <div class="open-text ${(!item['拾取条件'] || item['拾取条件'] === '') ? 'hide': ''}">开启条件：<span>${item['拾取条件']}</span></div>
+                    <div class="open-text ${(!item['出现条件'] || item['出现条件'] === '') ? 'hide': ''}">出现条件：<span>${item['出现条件']}</span></div>
                     <div class="open-text ${(!item['撤离条件'] || item['撤离条件'] === '') ? 'hide': ''}">撤离条件：<span>${item['撤离条件']}</span></div>`;
                 } else if (item['激活条件']) {
                     var popupHtml =`
@@ -825,6 +827,7 @@ var pointsOfInterest = {
                             if (this.myIcon.name.indexOf('基地') > -1 || (this.myIcon.name.indexOf('据点') > -1 && window.occupy)) {
                                 initWarSwiper(this.myIcon.name, that);
                             }
+
 
 
                             $('.btn-floor').on('click', enterFloorMode)
