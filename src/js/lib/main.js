@@ -1227,7 +1227,8 @@ function addLayer (mapName) {
         href = mapScaleInfo.floorInfo?.info?.href
     } else {
         // href = ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/'
-         href = ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/'
+        //  href = ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/'
+         href= '../../img/'
     }
 
     if (window.occupy) {

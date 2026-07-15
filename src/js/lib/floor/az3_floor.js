@@ -2,17 +2,18 @@ var az3Floor = {
   info: {
     width: 80999.179688,
     height: 80831.398438,
-    bj: 128,
+    bj: 64,
     boundsW: -250,
     boundsH: 300,
     centerX: 197518.906250,
     centerY: 204814.046875,
-    maxZomm: 4,
-    minZoom: 5,
-        initZoom: 5,
+    minZoom: 4,
+    maxZomm:5,
+    initZoom: 4,
     initX: -105,
     initY: 110,
     rotate: -90,
+    pixelToLatLngRatio: -0.35,
     floorAliasMap: {
           '核心反应堆': 'RBMK反应堆',
       'RBMK反应堆': 'RBMK反应堆',
@@ -27,13 +28,13 @@ var az3Floor = {
           floor_name: 'RBMK反应堆',
           boundsW: -210,
           boundsH: 230,
-          minZoom: 4,
-          initZoom: 4,
-          initX: -33,
-          initY: 8,
-          latLngX: -55,
-          latLngY: 70,
-          pixelToLatLngRatio: -0.85,
+          minZoom: 5,
+          initZoom: 5,
+          initX: -46,
+          initY: 60,
+          latLngX: -20,
+          latLngY: -20,
+          pixelToLatLngRatio: -0.6,
         },
         {
           floor_f: '2F',
@@ -41,13 +42,13 @@ var az3Floor = {
           floor_name: 'RBMK反应堆',
           boundsW: -210,
           boundsH: 230,
-          minZoom: 4,
-          initZoom: 4,
-          initX: -33,
-          initY: 8,
-          latLngX: -55,
-          latLngY: 70,
-          pixelToLatLngRatio: -0.85,
+          minZoom: 5,
+          initZoom: 5,
+          initX: -46,
+          initY: 60,
+          latLngX: -20,
+          latLngY: -20,
+          pixelToLatLngRatio: -0.6,
         },
         {
           floor_f: '3F',
@@ -55,13 +56,13 @@ var az3Floor = {
           floor_name: 'RBMK反应堆',
           boundsW: -210,
           boundsH: 230,
-          minZoom: 4,
-          initZoom: 4,
-          initX: -33,
-          initY: 8,
-          latLngX: -55,
-          latLngY: 70,
-          pixelToLatLngRatio: -0.85,
+          minZoom: 5,
+          initZoom: 5,
+          initX: -46,
+          initY: 60,
+          latLngX: -20,
+          latLngY: -20,
+          pixelToLatLngRatio: -0.6,
         }
       ],
       '老科学院': [
@@ -70,28 +71,28 @@ var az3Floor = {
           floor_address: '2',
           floor_name: '老科学院',
           boundsW: -210,
-          boundsH: 330,
-          minZoom: 4,
-          initZoom: 4,
-          initX: -140,
-          initY: 58,
-          latLngX: -55,
-          latLngY: 10,
-          pixelToLatLngRatio: -0.85,
+          boundsH: 230,
+          minZoom: 6,
+          initZoom: 6,
+          initX: -68,
+          initY: 45,
+          latLngX: -20,
+          latLngY: -20,
+          pixelToLatLngRatio: -0.6,
         },
         {
           floor_f: '2F',
           floor_address: '2',
           floor_name: '老科学院',
           boundsW: -210,
-          boundsH: 330,
-          minZoom: 4,
-          initZoom: 4,
-          initX: -140,
-          initY: 58,
-          latLngX: -55,
-          latLngY: 10,
-          pixelToLatLngRatio: -0.85,
+          boundsH: 230,
+          minZoom: 6,
+          initZoom: 6,
+          initX: -68,
+          initY: 45,
+          latLngX: -20,
+          latLngY: -20,
+          pixelToLatLngRatio: -0.6,
         },
       ],
       '压水堆': [
@@ -99,29 +100,29 @@ var az3Floor = {
           floor_f: '1F',
           floor_address: '3',
           floor_name: '压水堆',
-          boundsW: -280,
+          boundsW: -210,
           boundsH: 230,
-          minZoom: 4,
-          initZoom: 4,
-          initX: -60,
-          initY: 58,
-          latLngX: -40,
-          latLngY: 120,
-          pixelToLatLngRatio: -0.85,
+          minZoom: 6,
+          initZoom: 6,
+          initX: -40,
+          initY: 88,
+          latLngX: -20,
+          latLngY: -20,
+          pixelToLatLngRatio: -0.6,
         },
         {
           floor_f: '2F',
           floor_address: '3',
           floor_name: '压水堆',
-          boundsW: -280,
+          boundsW: -210,
           boundsH: 230,
-          minZoom: 4,
-          initZoom: 4,
-          initX: -60,
-          initY: 58,
-          latLngX: -40,
-          latLngY: 120,
-          pixelToLatLngRatio: -0.85,
+          minZoom: 6,
+          initZoom: 6,
+          initX: -40,
+          initY: 88,
+          latLngX: -20,
+          latLngY: -20,
+          pixelToLatLngRatio: -0.6,
         },
       ],
     }
@@ -357,54 +358,7 @@ var az3Floor = {
     "icon": "nav_gyjscwx",
     "mode": "泄露区刷新"
   },
-  {
-    "name": "保险箱",
-    "lang": "lang_bxg",
-    "idType": 1,
-    "num": 3,
-    "icon": "nav_bxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "服务器",
-    "lang": "lang_fwq",
-    "idType": 3,
-    "num": 2,
-    "icon": "nav_fwq",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "电脑机箱",
-    "lang": "lang_dnjx",
-    "idType": 5,
-    "num": 3,
-    "icon": "nav_dnjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "收纳盒",
-    "lang": "lang_dgjh",
-    "idType": 10,
-    "num": 2,
-    "icon": "nav_dgjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "高级储物箱",
-    "lang": "lang_gjcwx",
-    "idType": 18,
-    "num": 2,
-    "icon": "nav_gjcwx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "抽屉柜",
-    "lang": "lang_ctg",
-    "idType": 19,
-    "num": 3,
-    "icon": "nav_ctg",
-    "mode": "需要密钥才能开启"
-  }
+  
 ],
   navList_second1: [
   {
@@ -2993,54 +2947,6 @@ var az3Floor = {
     "icon": "nav_gyjscwx",
     "mode": "泄露区刷新"
   },
-  {
-    "name": "保险箱",
-    "lang": "lang_bxg",
-    "idType": 1,
-    "num": 3,
-    "icon": "nav_bxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "服务器",
-    "lang": "lang_fwq",
-    "idType": 3,
-    "num": 2,
-    "icon": "nav_fwq",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "电脑机箱",
-    "lang": "lang_dnjx",
-    "idType": 5,
-    "num": 3,
-    "icon": "nav_dnjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "收纳盒",
-    "lang": "lang_dgjh",
-    "idType": 10,
-    "num": 2,
-    "icon": "nav_dgjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "高级储物箱",
-    "lang": "lang_gjcwx",
-    "idType": 18,
-    "num": 2,
-    "icon": "nav_gjcwx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "抽屉柜",
-    "lang": "lang_ctg",
-    "idType": 19,
-    "num": 3,
-    "icon": "nav_ctg",
-    "mode": "需要密钥才能开启"
-  }
 ],
   navList2_second1: [
    {
@@ -5556,70 +5462,6 @@ var az3Floor = {
     "icon": "nav_kdx",
     "mode": "泄露区刷新"
   },
-   {
-    "name": "保险箱",
-    "lang": "lang_bxg",
-    "idType": 1,
-    "num": 4,
-    "icon": "nav_bxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "小保险箱",
-    "lang": "lang_xbxx",
-    "idType": 2,
-    "num": 3,
-    "icon": "nav_xbxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "服务器",
-    "lang": "lang_fwq",
-    "idType": 3,
-    "num": 3,
-    "icon": "nav_fwq",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "收纳盒",
-    "lang": "lang_dgjh",
-    "idType": 10,
-    "num": 3,
-    "icon": "nav_dgjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "高级储物箱",
-    "lang": "lang_gjcwx",
-    "idType": 18,
-    "num": 1,
-    "icon": "nav_gjcwx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "抽屉柜",
-    "lang": "lang_ctg",
-    "idType": 19,
-    "num": 4,
-    "icon": "nav_ctg",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "登山包",
-    "lang": "lang_dsb",
-    "idType": 20,
-    "num": 3,
-    "icon": "nav_dsb",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "屏蔽箱",
-    "lang": "lang_mt",
-    "idType": 25,
-    "num": 1,
-    "icon": "nav_pbx",
-    "mode": "需要密钥才能开启"
-  }
 ],
   navList_second2: [
   {
@@ -7057,70 +6899,6 @@ var az3Floor = {
     "num": 2,
     "icon": "nav_kdx",
     "mode": "泄露区刷新"
-  },
-  {
-    "name": "保险箱",
-    "lang": "lang_bxg",
-    "idType": 1,
-    "num": 4,
-    "icon": "nav_bxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "小保险箱",
-    "lang": "lang_xbxx",
-    "idType": 2,
-    "num": 3,
-    "icon": "nav_xbxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "服务器",
-    "lang": "lang_fwq",
-    "idType": 3,
-    "num": 3,
-    "icon": "nav_fwq",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "收纳盒",
-    "lang": "lang_dgjh",
-    "idType": 10,
-    "num": 3,
-    "icon": "nav_dgjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "高级储物箱",
-    "lang": "lang_gjcwx",
-    "idType": 18,
-    "num": 1,
-    "icon": "nav_gjcwx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "抽屉柜",
-    "lang": "lang_ctg",
-    "idType": 19,
-    "num": 4,
-    "icon": "nav_ctg",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "登山包",
-    "lang": "lang_dsb",
-    "idType": 20,
-    "num": 3,
-    "icon": "nav_dsb",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "屏蔽箱",
-    "lang": "lang_mt",
-    "idType": 25,
-    "num": 1,
-    "icon": "nav_pbx",
-    "mode": "需要密钥才能开启"
   }
 ],
   navList2_second2: [
@@ -8593,62 +8371,6 @@ var az3Floor = {
     "idType": 25,
     "num": 1,
     "icon": "nav_ypbwx"
-  },
-  {
-    "name": "保险箱",
-    "lang": "lang_bxg",
-    "idType": 1,
-    "num": 1,
-    "icon": "nav_bxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "小保险箱",
-    "lang": "lang_xbxx",
-    "idType": 2,
-    "num": 2,
-    "icon": "nav_xbxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "电脑机箱",
-    "lang": "lang_dnjx",
-    "idType": 5,
-    "num": 2,
-    "icon": "nav_dnjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "收纳盒",
-    "lang": "lang_dgjh",
-    "idType": 10,
-    "num": 1,
-    "icon": "nav_dgjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "抽屉柜",
-    "lang": "lang_ctg",
-    "idType": 19,
-    "num": 1,
-    "icon": "nav_ctg",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "登山包",
-    "lang": "lang_dsb",
-    "idType": 20,
-    "num": 2,
-    "icon": "nav_dsb",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "屏蔽箱",
-    "lang": "lang_mt",
-    "idType": 25,
-    "num": 1,
-    "icon": "nav_pbx",
-    "mode": "需要密钥才能开启"
   }
 ],
   navList_second3: [
@@ -9889,62 +9611,6 @@ var az3Floor = {
     "idType": 25,
     "num": 1,
     "icon": "nav_ypbwx"
-  },
-  {
-    "name": "保险箱",
-    "lang": "lang_bxg",
-    "idType": 1,
-    "num": 1,
-    "icon": "nav_bxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "小保险箱",
-    "lang": "lang_xbxx",
-    "idType": 2,
-    "num": 2,
-    "icon": "nav_xbxx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "电脑机箱",
-    "lang": "lang_dnjx",
-    "idType": 5,
-    "num": 2,
-    "icon": "nav_dnjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "收纳盒",
-    "lang": "lang_dgjh",
-    "idType": 10,
-    "num": 1,
-    "icon": "nav_dgjx",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "抽屉柜",
-    "lang": "lang_ctg",
-    "idType": 19,
-    "num": 1,
-    "icon": "nav_ctg",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "登山包",
-    "lang": "lang_dsb",
-    "idType": 20,
-    "num": 2,
-    "icon": "nav_dsb",
-    "mode": "需要密钥才能开启"
-  },
-  {
-    "name": "屏蔽箱",
-    "lang": "lang_mt",
-    "idType": 25,
-    "num": 1,
-    "icon": "nav_pbx",
-    "mode": "需要密钥才能开启"
   }
 ],
   navList2_second3: [
