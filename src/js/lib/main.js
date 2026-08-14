@@ -730,10 +730,21 @@ var pointsOfInterest = {
                          <div class="open-text war ${(!item['激活条件'] || item['激活条件'] === '' || item['激活条件'] === '-') ? 'hide': ''}">激活条件：<span>${item['激活条件']}</span></div>
                          `
                    
+                } else if (item['img']) {
+                    var popupHtml = `
+                    <div class="name">${this?.sub_name ? this.sub_name : this.name}</div>
+                    <div class="marker-preview">
+                        <img src="${item['img']}" />
+                    </div>
+                `;
+                console.log('走着了');
+                
                 } else {
                     var popupHtml = `
                     <div class="name">${this?.sub_name ? this.sub_name : this.name}</div>
                 `;
+                console.log('走了这里');
+                
                 }
               
 
@@ -768,11 +779,11 @@ var pointsOfInterest = {
                     // console.log('rotate', currWarMap, NavCliciIndex);
                     var myIcon =  L.divIcon({
                         className: ` ${isWar ? 'map-war-icon' : 'map-icon'} ${nameClassMap[that.name] || ''}`,
-                        html: `<div class="map-icon-bg" style="${that?.rotate ? `transform: translate3d(-50%, -50%, 0) rotate(${Number(that?.rotate) + rotate}deg) ` : ''}"><img src="${path + iconName}.png"/></div>`,
+                        html: `<div class="map-icon-bg" style="${that?.rotate ? `transform: translate3d(-50%, -50%, 0) rotate(${Number(that?.rotate) + rotate}deg) ` : ''}"><img src="${path + iconName}.png"/><text class="order" style="${that?.index ? 'display: block' : 'display: none'}" >#${that?.index}</text></div>`,
                         iconSize: [30, 30],			//设置图标大小
                         iconAnchor: [15, 15],		//设置图标偏移
                     })
-                    // console.log(that);
+                    console.log(that);
                     
                     if (that.name === '电梯撤离点' && that.point1) {
                         var pos1 = getMapPos(that.point1.x, that.point1.y)
@@ -810,6 +821,8 @@ var pointsOfInterest = {
                             this.myIcon = myIcon;
                             if (that?.floor || that?.floor === 0) {
                                 $('.leaflet-popup').addClass('floor')
+                            } else if (that?.index) {
+                                $('.leaflet-popup').addClass('preview')
                             } else {
                                 $('.leaflet-popup').removeClass('floor')
                             }
@@ -817,7 +830,7 @@ var pointsOfInterest = {
                             this.openPopup();
                             this.setIcon( L.divIcon({
                                 className: ` ${isWar ? 'map-war-icon' : 'map-icon'} click ${nameClassMap[that.name] || ''}`,
-                                html: `<div class="map-icon-bg" ><img src="${path + iconName}.png" style="${that?.rotate ? `transform:  rotate(${Number(that?.rotate) + rotate}deg)` : ''}"/></div>`,
+                                html: `<div class="map-icon-bg" ><img src="${path + iconName}.png" style="${that?.rotate ? `transform:  rotate(${Number(that?.rotate) + rotate}deg)` : ''}"/> <text class="order" style="${that?.index ? 'display: block' : 'display: none'}" >#${that?.index}</text></div>`,
                                 iconSize: [30, 30],			//设置图标大小
                                 iconAnchor: [15, 15],		//设置图标偏移
                             }));
@@ -1226,9 +1239,9 @@ function addLayer (mapName) {
     } else if (isFloor && mapScaleInfo.floorInfo?.info?.href) {
         href = mapScaleInfo.floorInfo?.info?.href
     } else {
-        // href = ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/'
+        href = ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/'
         //  href = ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/'
-         href= '../../img/'
+        //  href= '../../img/'
     }
 
     if (window.occupy) {
@@ -1582,6 +1595,7 @@ var renderNavTypeList = function (list, navIndex = 0) {
     
     // 定义分类容器
     const categories = {
+        cbt: { title: '藏宝图', html: '' },
         wz: { title: '物资点', html: '' },
         mode: { title: '泄露区物资点', html: '' },
         my: { title: '密钥刷新点', html: '' },
@@ -1625,6 +1639,8 @@ var renderNavTypeList = function (list, navIndex = 0) {
         
         if (item.name.indexOf('撤离点') !== -1) {
             addToCategory(item, index, 'cld');
+        }else if ( item?.name?.indexOf('藏宝图') > -1) {
+            addToCategory(item, index, 'cbt');
         } else if (item?.mode?.indexOf('泄露区') > -1){
             addToCategory(item, index, 'mode');
         } else if (item?.name?.indexOf('密钥') > -1){

@@ -293,6 +293,13 @@ var navList_cgxg = [
         icon: "nav_xlx",
       },
       {
+        "name": "藏宝图",
+        "lang": "lang_gjlxx",
+        "idType": 25,
+        "num": 11,
+        "icon": "nav_cbt"
+      },
+      {
         name: "出生点",
         num: 22,
         icon: "nav_csd",
@@ -7028,6 +7035,106 @@ var mapArticle_cgxg = [
         "x": "295356.6875",
         "y": "-665416.1875"
     },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 1,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt1.png',
+        "icon": "cbt",
+      "x": "361025.1563",
+      "y": "-580540.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 2,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt2.png',
+        "icon": "cbt",
+      "x": "375410.2813",
+      "y": "-614822.875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 3,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt3.png',
+        "icon": "cbt",
+      "x": "329515.0313",
+      "y": "-627265.1875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 4,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt4.png',
+        "icon": "cbt",
+      "x": "334426.4375",
+      "y": "-665030.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 5,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt5.png',
+        "icon": "cbt",
+      "x": "348245.3438",
+      "y": "-677923.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 6,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt6.png',
+        "icon": "cbt",
+      "x": "352083.5625",
+      "y": "-700362.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 7,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt7.png',
+        "icon": "cbt",
+      "x": "376787.2813",
+      "y": "-657646.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 9,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt9.png',
+        "icon": "cbt",
+      "x": "299408.2188",
+      "y": "-669182.6875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 10,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt10.png',
+        "icon": "cbt",
+      "x": "291086.5938",
+      "y": "-640145.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 11,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt11.png',
+        "icon": "cbt",
+      "x": "370148.3125",
+      "y": "-629192",
+      "z": ""
+    },
   {
     name: "出生点",
     type: "revive",
@@ -7678,6 +7785,13 @@ var navList2_cgxg = [
         idType: 25,
         num: 19,
         icon: "nav_xlx",
+      },
+      {
+        "name": "藏宝图",
+        "lang": "lang_gjlxx",
+        "idType": 25,
+        "num": 11,
+        "icon": "nav_cbt"
       },
       {
         name: "出生点",
@@ -14331,6 +14445,106 @@ var mapArticle2_cgxg = [
         "x": "295356.6875",
         "y": "-665416.1875"
     },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 1,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt1.png',
+        "icon": "cbt",
+      "x": "361025.1563",
+      "y": "-580540.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 2,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt2.png',
+        "icon": "cbt",
+      "x": "375410.2813",
+      "y": "-614822.875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 3,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt3.png',
+        "icon": "cbt",
+      "x": "329515.0313",
+      "y": "-627265.1875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 4,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt4.png',
+        "icon": "cbt",
+      "x": "334426.4375",
+      "y": "-665030.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 5,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt5.png',
+        "icon": "cbt",
+      "x": "348245.3438",
+      "y": "-677923.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 6,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt6.png',
+        "icon": "cbt",
+      "x": "352083.5625",
+      "y": "-700362.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 7,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt7.png',
+        "icon": "cbt",
+      "x": "376787.2813",
+      "y": "-657646.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 9,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt9.png',
+        "icon": "cbt",
+      "x": "299408.2188",
+      "y": "-669182.6875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 10,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt10.png',
+        "icon": "cbt",
+      "x": "291086.5938",
+      "y": "-640145.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 11,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt11.png',
+        "icon": "cbt",
+      "x": "370148.3125",
+      "y": "-629192",
+      "z": ""
+    },
   {
     name: "出生点",
     type: "revive",
@@ -14971,6 +15185,13 @@ var navList3_cgxg = [
         idType: 25,
         num: 18,
         icon: "nav_xlx",
+      },
+      {
+        "name": "藏宝图",
+        "lang": "lang_gjlxx",
+        "idType": 25,
+        "num": 11,
+        "icon": "nav_cbt"
       },
       {
         name: "出生点",
@@ -21764,6 +21985,106 @@ var mapArticle3_cgxg = [
         "x": "303025.0625",
         "y": "-641639.75"
     },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 1,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt1.png',
+        "icon": "cbt",
+      "x": "361025.1563",
+      "y": "-580540.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 2,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt2.png',
+        "icon": "cbt",
+      "x": "375410.2813",
+      "y": "-614822.875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 3,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt3.png',
+        "icon": "cbt",
+      "x": "329515.0313",
+      "y": "-627265.1875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 4,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt4.png',
+        "icon": "cbt",
+      "x": "334426.4375",
+      "y": "-665030.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 5,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt5.png',
+        "icon": "cbt",
+      "x": "348245.3438",
+      "y": "-677923.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 6,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt6.png',
+        "icon": "cbt",
+      "x": "352083.5625",
+      "y": "-700362.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 7,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt7.png',
+        "icon": "cbt",
+      "x": "376787.2813",
+      "y": "-657646.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 9,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt9.png',
+        "icon": "cbt",
+      "x": "299408.2188",
+      "y": "-669182.6875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 10,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt10.png',
+        "icon": "cbt",
+      "x": "291086.5938",
+      "y": "-640145.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 11,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt11.png',
+        "icon": "cbt",
+      "x": "370148.3125",
+      "y": "-629192",
+      "z": ""
+    },
   // 复活点
   {
     name: "出生点",
@@ -22409,6 +22730,13 @@ var navList4_cgxg = [
         idType: 25,
         num: 19,
         icon: "nav_xlx",
+      },
+      {
+        "name": "藏宝图",
+        "lang": "lang_gjlxx",
+        "idType": 25,
+        "num": 11,
+        "icon": "nav_cbt"
       },
       {
         name: "出生点",
@@ -29147,6 +29475,106 @@ var mapArticle4_cgxg = [
         "x": "303025.0625",
         "y": "-641639.75"
     },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 1,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt1.png',
+        "icon": "cbt",
+      "x": "361025.1563",
+      "y": "-580540.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 2,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt2.png',
+        "icon": "cbt",
+      "x": "375410.2813",
+      "y": "-614822.875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 3,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt3.png',
+        "icon": "cbt",
+      "x": "329515.0313",
+      "y": "-627265.1875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 4,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt4.png',
+        "icon": "cbt",
+      "x": "334426.4375",
+      "y": "-665030.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 5,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt5.png',
+        "icon": "cbt",
+      "x": "348245.3438",
+      "y": "-677923.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 6,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt6.png',
+        "icon": "cbt",
+      "x": "352083.5625",
+      "y": "-700362.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 7,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt7.png',
+        "icon": "cbt",
+      "x": "376787.2813",
+      "y": "-657646.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 9,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt9.png',
+        "icon": "cbt",
+      "x": "299408.2188",
+      "y": "-669182.6875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 10,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt10.png',
+        "icon": "cbt",
+      "x": "291086.5938",
+      "y": "-640145.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 11,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt11.png',
+        "icon": "cbt",
+      "x": "370148.3125",
+      "y": "-629192",
+      "z": ""
+    },
   {
     name: "出生点",
     type: "revive",
@@ -35671,6 +36099,106 @@ var mapArticle5_cgxg = [
         "x": "335327.3",
         "y": "-580116"
     },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 1,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt1.png',
+        "icon": "cbt",
+      "x": "361025.1563",
+      "y": "-580540.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 2,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt2.png',
+        "icon": "cbt",
+      "x": "375410.2813",
+      "y": "-614822.875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 3,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt3.png',
+        "icon": "cbt",
+      "x": "329515.0313",
+      "y": "-627265.1875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 4,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt4.png',
+        "icon": "cbt",
+      "x": "334426.4375",
+      "y": "-665030.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 5,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt5.png',
+        "icon": "cbt",
+      "x": "348245.3438",
+      "y": "-677923.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 6,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt6.png',
+        "icon": "cbt",
+      "x": "352083.5625",
+      "y": "-700362.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 7,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt7.png',
+        "icon": "cbt",
+      "x": "376787.2813",
+      "y": "-657646.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 9,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt9.png',
+        "icon": "cbt",
+      "x": "299408.2188",
+      "y": "-669182.6875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 10,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt10.png',
+        "icon": "cbt",
+      "x": "291086.5938",
+      "y": "-640145.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 11,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt11.png',
+        "icon": "cbt",
+      "x": "370148.3125",
+      "y": "-629192",
+      "z": ""
+    },
   // 复活点
   {
     name: "出生点",
@@ -42156,6 +42684,106 @@ var mapArticle6_cgxg = [
         "icon": "xbxx",
         "x": "335327.3",
         "y": "-580116"
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 1,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt1.png',
+        "icon": "cbt",
+      "x": "361025.1563",
+      "y": "-580540.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 2,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt2.png',
+        "icon": "cbt",
+      "x": "375410.2813",
+      "y": "-614822.875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 3,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt3.png',
+        "icon": "cbt",
+      "x": "329515.0313",
+      "y": "-627265.1875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 4,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt4.png',
+        "icon": "cbt",
+      "x": "334426.4375",
+      "y": "-665030.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 5,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt5.png',
+        "icon": "cbt",
+      "x": "348245.3438",
+      "y": "-677923.25",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 6,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt6.png',
+        "icon": "cbt",
+      "x": "352083.5625",
+      "y": "-700362.375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 7,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt7.png',
+        "icon": "cbt",
+      "x": "376787.2813",
+      "y": "-657646.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 9,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt9.png',
+        "icon": "cbt",
+      "x": "299408.2188",
+      "y": "-669182.6875",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 10,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt10.png',
+        "icon": "cbt",
+      "x": "291086.5938",
+      "y": "-640145.9375",
+      "z": ""
+    },
+    {
+      "name": "藏宝图",
+      "type": "revive",
+      "index": 11,
+       "img": ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/cgxg_cbt11.png',
+        "icon": "cbt",
+      "x": "370148.3125",
+      "y": "-629192",
+      "z": ""
     },
   {
     name: "出生点",
