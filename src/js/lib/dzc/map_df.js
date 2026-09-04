@@ -62,7 +62,7 @@ window["df"].info = {
   names_mobile: "map_df_zl",
   sector: 3,
   rotate: false,
-  href: window.location.href.indexOf(80)|| window.location.href.indexOf('test') > -1 ? '../../img/': 'https://game.gtimg.cn/images/dfm/cp/a20250113map/',
+  href: './img/',
   sectorInit: [
     {
       minZoom: 2.8,

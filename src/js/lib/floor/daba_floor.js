@@ -15,7 +15,7 @@ var dabaFloor = {
         latLngX: -25,
         latLngY: 55,
         pixelToLatLngRatio: -0.85,
-        href:(window.location.href.indexOf(80) > -1 || window.location.href.indexOf("test") > -1) ? '../../img/': 'https://game.gtimg.cn/images/dfm/cp/a20250113map/',
+        href:'./img/',
         floorAliasMap: {
           '地下': '地下通道',
           '地下通道': '地下通道',

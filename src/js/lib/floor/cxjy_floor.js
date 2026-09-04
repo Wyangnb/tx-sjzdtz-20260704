@@ -16,11 +16,7 @@ var cxjyFloor = {
     latLngX: -25,
     latLngY: 55,
     pixelToLatLngRatio: -0.35,
-    href:
-      window.location.href.indexOf(80) > -1 ||
-      window.location.href.indexOf("test") > -1
-        ? "../../img/"
-        : "https://game.gtimg.cn/images/dfm/cp/a20250113map/",
+    href:"./img/",
         floorAliasMap: {
           '行政区':'潮汐监狱',
           '卸货区':'潮汐监狱',

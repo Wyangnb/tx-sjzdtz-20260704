@@ -1,4 +1,5 @@
 /* eslint-disable */
+var IMG_PRE = (window.location.href.indexOf(80) > -1) ? '': '//game.gtimg.cn/images/dfm/cp/a20240729directory/';
 
 var getQuery = function (name) {
     var m = window.location.search.match(new RegExp('(\\?|&)' + name + '=([^&]*)(&|$)'));
@@ -286,7 +287,7 @@ function getMapPos (posX, posY) {
     // var yB = 80988.500000 / 4096 / -bj
     var yB2 = mapScaleInfo.height / bj
     
-    console.log('mapScaleInfo', mapScaleInfo);
+    // console.log('mapScaleInfo', mapScaleInfo);
     
     // 世界中心轴x： 358155.687500； y： 750191.750000
     // return {x: bj - (mapScaleInfo.centerX - x ) / xB2, y: -bj - (mapScaleInfo.centerY + y ) / yB2}
@@ -626,7 +627,8 @@ var borderList = [];
 var pointsOfInterest = {
     '0': { x: 364598.812500, y: -787795.000000, name: "行政辖区", threshold: 10 },
     '1': [{ x: 360745.000000, y: -630639.000000, name: "钻石皇后酒店", threshold: 10 },
-        {x: 298737.031250, y: -630639.000000, name: "储藏站", threshold: 10 },
+        // {x: 298737.031250, y: -630639.000000, name: "储藏站", threshold: 10 },
+        {x: 290285.000000,y: -643214.000000, name: "哈夫克雷达站", threshold: 10 },
     ],
     '3': { x: 378916.156250, y: -459727.375000, name: "皇家博物馆", threshold: 10 },
     '4': [{ x: 50681.226562, y: -46910.406250, name: "行政区", threshold: 10 },
@@ -656,6 +658,130 @@ var pointsOfInterest = {
     
 
 
+// ========== ★ 通用自定义区域绘制（自 PC 版迁移，去国际化） ==========
+// 用法（纯数据操作，零接线）：
+//   1. 区域数据挂在当前地图 poi（selectRegion_*）的条目上：加 points（"X=..,Y=..,Z=.." 数组，L.polygon 自动闭合）
+//      和可选 style（{ color, weight, dashArray, fillOpacity }）；
+//   2. 道具对象加 activeRegion: '<poi条目name>' 或 ['<name1>', '<name2>', ...]（一次高亮多个区域），
+//      导航栏勾选该道具时绘制对应区域 polygon + 名称标注；取消勾选时按剩余勾选道具重算重绘。
+//      同一区域被多个道具引用时同屏只画一份（drawnRegions 幂等）。
+//   3. 子区域（可选）：条目加 children: [{ name, x, y, points, style? }, ...]——父被触发时跟随渲染，
+//      每个子项画自己的 polygon + 子标题（锚点用 child.x/y），颜色缺省继承父色（child.style 可单独指定）；
+//      父条目的 points 保留则照常画父轮廓 + 父标题，两者互不排斥；children 只一层、不可被 activeRegion 独立引用。
+//   区域轮廓可用 scripts/build_game_world_points.js 从原图手动取点生成。
+var regionLayers = [];                          // 已绘制区域图层（polygon + 名称标签），统一清理入口
+var DEFAULT_REGION_COLOR = '#185FA5';           // 区域缺省描边/填充色（可被 region.color / style.color 覆盖）
+var drawnRegions = {};                          // 已绘制区域名集合（drawRegion 幂等依据；clearRegions 时重置）
+
+// 清理当前已绘制的所有自定义区域（polygon + 名称标签）；导航重算 / 切图 / 切楼层时调用
+function clearRegions() {
+    $.each(regionLayers, function () { this.remove(); });
+    regionLayers = [];
+    drawnRegions = {};
+}
+
+// 绘制一个自定义区域（poi 条目驱动）+ 名称标注；只画不清，配合 clearRegions 使用：
+//   导航模式 = 勾选道具时由 syncRegions 统一按勾选集调用（drawnRegions 幂等，同区域同屏只画一份）
+//   条目带 children 时：父 polygon/标题 + 所有子区域 polygon/子标题 一并渲染（子区域不可被 activeRegion 独立引用）
+function drawRegion(name) {
+    // 幂等：同一区域同屏只画一份（多个道具引用同一 activeRegion 时不叠加）
+    if (drawnRegions[name]) return;
+    drawnRegions[name] = true;
+    // 从当前地图 poi（selectRegion_*）按 name 找带 points 或 children 的条目（如核电站水域）
+    var region = null;
+    if (poiInfo && poiInfo.length) {
+        for (var i = 0; i < poiInfo.length; i++) {
+            if (poiInfo[i].name === name &&
+                ((poiInfo[i].points && poiInfo[i].points.length) || (poiInfo[i].children && poiInfo[i].children.length))) {
+                region = poiInfo[i];
+                break;
+            }
+        }
+    }
+    if (!region) return;
+    // 父区域：有 points 时绘制父 polygon + 父标题
+    if (region.points && region.points.length) drawOneRegion(region, region.name);
+    // 子区域：children 跟随父渲染；有 points 画 polygon + 子标题，仅 {name,x,y} 时只渲染子标题
+    //   锚点用 child.x/y（或 labelX/labelY），颜色缺省继承父色；无 points 也无锚点的项跳过
+    if (region.children && region.children.length) {
+        region.children.forEach(function (child) {
+            if (!child) return;
+            var hasAnchor = (child.x != null && child.y != null &&
+                             Number.isFinite(Number(child.x)) && Number.isFinite(Number(child.y))) ||
+                            (child.labelX != null && child.labelY != null);
+            if (!hasAnchor && !(child.points && child.points.length)) return;
+            drawOneRegion(child, child.name);
+        });
+    }
+}
+
+// 绘制单个区域 polygon + 名称标注（父条目与 children 子项共用）；只画不清，配合 clearRegions 使用
+// 有 points 画 polygon + 标题；仅 {name,x,y}（children 简化态）时跳过 polygon、只渲染标题
+// 样式：item.style / item.color 可覆盖缺省色；名称锚点：labelX/labelY > item.x/y（children 即 child.x/y）> 顶点均值
+function drawOneRegion(item, labelText) {
+    var latlngs = null;
+    // 顶点解析（与 drawBorder 同链路：filterPos → getMapPos）；无 points 时跳过 polygon 绘制
+    if (item.points && item.points.length) {
+        latlngs = item.points.map(function (str) {
+            var pos = getMapPos(filterPos(str, 'X', ','), filterPos(str, 'Y', ',', 1));
+            return [pos.y, pos.x];
+        });
+        // 区域 polygon（区域色 + 半透明填充；interactive:false 避免遮挡 marker/地图操作）
+        // style 可覆盖默认样式（水域：2px 点状虚线 + 淡蓝半透明）；无 style 时行为与原来一致
+        var style = item.style || {};
+        var color = style.color || item.color || DEFAULT_REGION_COLOR;
+        regionLayers.push(L.polygon(latlngs, {
+            color: color, fillColor: color,
+            fillOpacity: style.fillOpacity != null ? style.fillOpacity : 0.15,
+            weight: style.weight != null ? style.weight : 2,
+            dashArray: style.dashArray || null,
+            interactive: false
+        }).addTo(map));
+    }
+    // 名称标注：优先用 labelX/labelY，其次用条目自带 x/y（selectRegion 条目即手工标注点），缺省取顶点均值；interactive:false 避免遮挡
+    var lp;
+    if (item.labelX != null && item.labelY != null) {
+        lp = getMapPos(item.labelX, item.labelY);
+    } else if (item.x != null && item.y != null && Number.isFinite(Number(item.x)) && Number.isFinite(Number(item.y))) {
+        lp = getMapPos(item.x, item.y);
+    } else if (latlngs) {
+        var sumLat = 0, sumLng = 0;
+        latlngs.forEach(function (ll) { sumLat += ll[0]; sumLng += ll[1]; });
+        lp = { y: sumLat / latlngs.length, x: sumLng / latlngs.length };
+    } else {
+        return; // 无 points 也无 x/y 锚点：无可画内容，放弃
+    }
+    regionLayers.push(L.marker([lp.y, lp.x], {
+        icon: L.divIcon({
+            className: 'map-region-name',
+            html: '<div class="region-item">' + (labelText || item.name) + '</div>'
+        }),
+        interactive: false
+    }).addTo(map));
+}
+
+// 收集当前所有已勾选道具的 activeRegion（去重，供 syncRegions 渲染）
+// 遍历当前地图道具数组 mapIcons：visibleMarker[getMarkerFilterKey(item)] 为 true 且带 activeRegion 的条目，
+// 展开字符串/数组并去重，返回区域名数组（不含重复项）
+function collectActiveRegions() {
+    var set = {};
+    (Array.isArray(mapIcons) ? mapIcons : []).forEach(function (item) {
+        if (!item || !item.activeRegion || !visibleMarker[getMarkerFilterKey(item)]) return;
+        var list = Array.isArray(item.activeRegion) ? item.activeRegion : [item.activeRegion];
+        list.forEach(function (rn) { if (rn) set[rn] = true; });
+    });
+    return Object.keys(set);
+}
+
+// 按当前勾选道具集合重绘自定义区域（导航勾选/取消/全选/切图统一入口，refreshMarker2 末尾调用）
+// 仅烽火模式生效（isWar=全面战场不走区域渲染）；先清空再重画 = "取消勾选 → set 剩余集合 → 渲染"
+// drawRegion 内部幂等，同一区域同屏只画一份
+function syncRegions() {
+    if (isWar) return;
+    clearRegions();
+    collectActiveRegions().forEach(function (rn) { drawRegion(rn); });
+}
+
     function refreshMarker2(from, arr) {
         $.each(cacheMarker, function () {
             if (this.options.icon?.polyline) {
@@ -671,6 +797,8 @@ var pointsOfInterest = {
         // });
         
         
+        // ★ 清理自定义区域图层（activeRegion 绘制），避免切图/切楼层/切难度残留（自 PC 版迁移）
+        clearRegions();
         isRemove = true;
         cacheMarker = [];
         markerList = []
@@ -700,7 +828,14 @@ var pointsOfInterest = {
                 var floorButtonAttrs = floorButtonInfo
                     ? ` data-nav="nav-list-nav_${this.icon}" data-name="${this.name}" data-region="${item['自定义区域'] || ''}" data-floor="${floorButtonInfo.floor_f}" data-index="${this.floor}"`
                     : '';
-                if (item['随机']) {
+                if (item['k1']) {
+                    // ★ 鱼类等 k1/k2 键值对条目（自 PC 版迁移）：name + 两行 key:value（k2 存在时补第二行），不再渲染其他标签行
+                    var popupHtml = `
+                        <div class="name fish" title="${this?.sub_name ? this.sub_name : this.name}">${this?.sub_name ? this.sub_name : this.name}</div>
+                        <div class="open-text">${item['k1']}:<span>${item['v1']}</span></div>
+                        ${item['k2'] ? `<div class="open-text">${item['k2']}:<span>${item['v2']}</span></div>` : ''}
+                    `;
+                } else if (item['随机']) {
                     var popupHtml = mapScaleInfo?.floor ? `
                     <div class="name ${(this.name === '[地狱黑鲨]雷斯—雷达站摧毁者' || this.name === '[地狱黑鲨]雷斯—酒店守卫者') && 'max'}">${this?.sub_name ? this.sub_name : this.name}<span> ( ${item['随机']} )</span></div>
                     <div class="btn-floor"${floorButtonAttrs}></div>
@@ -763,7 +898,7 @@ var pointsOfInterest = {
                 }
                 // console.log(this.x, this.y, pos);
                 
-                var path = isWar ? ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/dzc_i/' : ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/lv3/'
+                var path = isWar ? `${IMG_PRE}/img/dzc_i/` : `${IMG_PRE}/img/lv3/`
                 var iconName;
                 if (that.name === "进攻方基地" ) {
                     iconName = window.viewChange ? 'g_jdbsd_g': 'g_jdbsd_r'
@@ -857,6 +992,8 @@ var pointsOfInterest = {
           
         });
         isRemove = false;
+        // ★ 自定义区域与勾选状态绑定：末尾按当前勾选集重绘（开头已 clearRegions 清旧，天然"取消→重建剩余"）（自 PC 版迁移）
+        syncRegions();
         // console.log(cacheMarker.length);
     }
 
@@ -870,6 +1007,8 @@ var pointsOfInterest = {
             case "3_all":
             case "4_all":
             case "5_all":
+            case "6_all":
+                // ★ 6 = "鱼类"组索引（静态 nav 6 组后追加，自 PC 版迁移）
                 renderMarker()
                 break;
             case "0_none":
@@ -878,6 +1017,7 @@ var pointsOfInterest = {
             case "3_none":
             case "4_none":
             case "5_none":
+            case "6_none":
               
                 renderMarker()
                 isWar ? $('.map-war-icon').remove() : $('.map-icon').remove();
@@ -1239,7 +1379,7 @@ function addLayer (mapName) {
     } else if (isFloor && mapScaleInfo.floorInfo?.info?.href) {
         href = mapScaleInfo.floorInfo?.info?.href
     } else {
-        href = ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/'
+        href = `${IMG_PRE}/img/`
         //  href = ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/'
         //  href= '../../img/'
     }
@@ -1340,7 +1480,7 @@ function initRegion () {
             poiList.push(L.marker([pos.y, pos.x], {icon: myIcon}).addTo(map))
         })
     }
-    console.log('poiListhtml', html);
+    // console.log('poiListhtml', html);
     if (firstValidRegionName) {
         currRegion = firstValidRegionName;
     }
@@ -1398,6 +1538,7 @@ function enterFloorMode(e) {
     currFloorIndex = getFloorIndexByCode(currentFloorList, floor, index);
     if (currFloorIndex === -1) return;
     let currentFloor = currentFloorList[currFloorIndex];
+
     // console.log('进入分层', currRegion);
     
     $('#MapContainer').addClass('floor')
@@ -1431,6 +1572,8 @@ function enterFloorMode(e) {
     const mapPath = buildFloorMapPath(currentFloor, floor);
     changeMapLv(mapPath);
     console.log('changeMapLv2', currMap, currLv);
+    
+
     // if ($(e.target).hasClass('btn-floor')) {
     //     const nav = $(e.target).attr('data-nav');
     //     console.log(33333, saveMarker);
@@ -1534,6 +1677,13 @@ function resetAll (type) {
 var initNav = function () {
     currLeftNav = 0;
     var navLeft = $('.nav-options');
+    // ★ 鱼类导航组补挂（幂等）：initNav 可能先于 changeMapLv 执行，此处兜底一次
+    if (!isWar && !isFloor) {
+        allNavList = ensureFishGroup(allNavList, mapIcons);
+        navTypeList = ensureFishGroup(navTypeList, mapIcons);
+        // ★ 与 changeMapLv 一致的"全部"组注入兜底（幂等，已注入则原样返回）
+        allNavList = injectFishIntoAll(allNavList, getFishTypeList(allNavList));
+    }
     navLeft.html('')
     var navList;
     if (isWar) {
@@ -1545,7 +1695,9 @@ var initNav = function () {
 
     
     allNavList.forEach(function (item, index) {
-        navLeft.append(`<div class="nav-option-item nav-option-item-${index} ${currLeftNav === index ? 'active': ''}" style="${item.title === '行动接取站' ? 'display: none' : ''}" data-index="${index}">${item.title}</div>`)
+        // ★ 行动接取站恒隐藏；非战争模式下空"鱼类"组一并隐藏，避免无鱼地图出现空 tab（自 PC 版迁移）
+        var hideNav = item.title === '行动接取站' || (!isWar && item.titleType === 'yl' && !(item.typeList && item.typeList.length));
+        navLeft.append(`<div class="nav-option-item nav-option-item-${index} ${currLeftNav === index ? 'active': ''}" style="${hideNav ? 'display: none' : ''}" data-index="${index}">${item.title}</div>`)
        
     })
 
@@ -1555,6 +1707,11 @@ var initNav = function () {
         var index = $(e.target).attr('data-index');
         currLeftNav = index;
         navOptItem.removeClass('active')
+        // ★ 组越界兜底（自 PC 版迁移）：切到组数更少的地图后，残留 tab 点击回退第 0 组，避免取 undefined 崩溃
+        if (Number(index) !== 0 && !navTypeList[index]) {
+            index = '0';
+            currLeftNav = '0';
+        }
         $(`.nav-option-item-${index}`).addClass('active')
         // console.log($(e.target).attr('data-index'));
         if (Number(index) === 0) {
@@ -1589,7 +1746,120 @@ var initNav = function () {
     // })
 }
 
+// ========== ★ 鱼类导航组（自 PC 版 buildNavFromIcons 迁移，去国际化） ==========
+// 静态 nav 数据（navList_az3 等）没有"鱼类"入口；地图点位数据 mapArticle_* 中 catalog==='fish'
+// 的条目在此按 name__模式 聚合为第 N+1 组 tab（独立 tab，与 PC 版一致），同种鱼多个点位合并为 num。
+// 只在有鱼的地图追加（无鱼不产生空组）；floor（楼层扁平 nav）与战争（isWar）流程不处理。
+function buildFishGroup(icons) {
+    var entryMap = {};
+    var numMap = {};
+    (Array.isArray(icons) ? icons : []).forEach(function (item) {
+        if (!item || !item.name || item.catalog !== 'fish') return;
+        var key = getMarkerFilterKey(item);
+        numMap[key] = (numMap[key] || 0) + 1;
+        if (entryMap[key]) return;
+        var entry = { name: item.name, icon: item.icon ? 'nav_' + item.icon : 'nav_wz' };
+        var mode = getMarkerMode(item);
+        if (mode) entry.mode = mode;            // 携带 mode 保证 getMarkerFilterKey 与 marker 侧一致
+        if (item.catalog) entry.catalog = item.catalog;
+        if (item.sub_name) entry.sub_name = item.sub_name;
+        entryMap[key] = entry;
+    });
+    var typeList = Object.keys(entryMap).map(function (k) {
+        entryMap[k].num = numMap[k];
+        return entryMap[k];
+    });
+    return { titleType: 'yl', title: '鱼类', typeList: typeList };
+}
+// 幂等追加"鱼类"组到导航组数组末尾（已存在 yl 组则原样返回）；当前地图无鱼时不追加
+function ensureFishGroup(arr, icons) {
+    if (!Array.isArray(arr) || !Array.isArray(icons)) return arr;
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] && arr[i].titleType === 'yl') return arr;
+    }
+    var group = buildFishGroup(icons);
+    if (!group.typeList.length) return arr;
+    return arr.concat([group]);
+}
+// 取导航组数组中的"鱼类"组条目列表（无鱼返回 []）。allNavList / navTypeList 各自持有独立的 yl 组对象，
+// 故两边分别取，保持与 ensureFishGroup 一致的"各自构建"模式，避免跨数组共享同一批对象。
+function getFishTypeList(arr) {
+    if (!Array.isArray(arr)) return [];
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] && arr[i].titleType === 'yl') return Array.isArray(arr[i].typeList) ? arr[i].typeList : [];
+    }
+    return [];
+}
+// ★ 把鱼类条目注入"全部"组（allNavList[0] / titleType==='all'）
+// 背景：默认视图走 renderNavTypeList(allNavList[0].typeList, 0)（initNav L1732、点击 L1711），
+// 而静态 nav（navList_az3[0]）里一条 catalog==='fish' 都没有 —— 只有点「鱼类」tab 才走 navTypeList[6]。
+// 结果就是：navTypeList 里明明有鱼，首屏「全部」列表却一条鱼都看不到。
+// 实现约束（重要）：恒返回**新数组**、只替换 [0]，绝不原地 push。
+//   原因：allNavList 直接引用模块级 navList_az3（changeMapLv L3531），allNavList[0] 与 navList_az3[0] 是同一个对象；
+//   原地写会永久污染静态数据，且每次 changeMapLv 重复注入 → typeList 无限膨胀、切到无鱼难度后鱼还赖着不走。
+//   每次都从 config.nav 重新构造，天然幂等。
+function injectFishIntoAll(arr, fishEntries) {
+    if (!Array.isArray(arr) || !arr.length) return arr;
+    if (!Array.isArray(fishEntries) || !fishEntries.length) return arr;
+    var head = arr[0];
+    if (!head || head.titleType !== 'all' || !Array.isArray(head.typeList)) return arr;
+    // 按 filterKey 去重：已存在同名同 mode 的条目则跳过（重复渲染会被 renderNavTypeList 的 seenFilterKeys 吃掉，但 num 会算错）
+    var existKeys = {};
+    head.typeList.forEach(function (item) {
+        if (item) existKeys[getMarkerFilterKey(item)] = true;
+    });
+    var added = fishEntries.filter(function (item) {
+        return item && !existKeys[getMarkerFilterKey(item)];
+    });
+    if (!added.length) return arr;
+    var newHead = {};
+    for (var k in head) {
+        if (Object.prototype.hasOwnProperty.call(head, k)) newHead[k] = head[k];
+    }
+    newHead.typeList = head.typeList.concat(added);
+    return [newHead].concat(arr.slice(1));
+}
+
+// ★ 鱼类 tab 同步（自 PC 版迁移）：一级 tab 条只在 initNav 时构建一次，静态 nav 切图/切难度不重建；
+// 有鱼地图（ensureFishGroup 已在组尾追加 yl 组）若无鱼类 tab 则补一个，无鱼则摘除残留 tab，
+// 避免"入口缺失"（从无鱼图切到有鱼图）或"残留空 tab"（从有鱼图切到无鱼图）。
+// 鱼类组恒追加在组尾，data-index 与当前 navTypeList 对齐；用 data-fish-tab 标记避免按硬编码索引误伤其他组。
+function syncFishNavTab() {
+    var $navLeft = $('.nav-options');
+    if (!$navLeft || !$navLeft.length) return;
+    // 当前组布局中"鱼类"组索引（无鱼 = -1）
+    var fishIdx = -1;
+    (Array.isArray(allNavList) ? allNavList : []).forEach(function (g, i) {
+        if (g && g.titleType === 'yl') fishIdx = i;
+    });
+    var $fishTab = $('.nav-option-item[data-fish-tab="1"]');
+    if (fishIdx === -1) {
+        // 当前地图无鱼：若有残留鱼类 tab（上一张有鱼地图遗留）则移除
+        if ($fishTab.length) $fishTab.remove();
+        return;
+    }
+    // 有鱼且 tab 已存在且索引一致 → 无需处理
+    if ($fishTab.length && Number($fishTab.attr('data-index')) === fishIdx) return;
+    // 索引错位或缺失 → 删除旧的，按当前索引重建（切换逻辑与 initNav 内一致）
+    $fishTab.remove();
+    var $tab = $('<div class="nav-option-item nav-option-item-' + fishIdx + ' ' + (Number(currLeftNav) === fishIdx ? 'active' : '') + '" data-index="' + fishIdx + '" data-fish-tab="1">鱼类</div>');
+    $tab.appendTo($navLeft);
+    $tab.on('click', function () {
+        currLeftNav = String(fishIdx);
+        $('.nav-option-item').removeClass('active');
+        $(this).addClass('active');
+        renderNavTypeList((navTypeList[fishIdx] && navTypeList[fishIdx].typeList) ? navTypeList[fishIdx].typeList : [], fishIdx);
+        if (listIsAll[currLeftNav]) {
+            $('.btn-choose-all-icon').attr('class', 'img_all_open btn-choose-all-icon')
+        } else {
+            $('.btn-choose-all-icon').attr('class', 'img_all_close btn-choose-all-icon')
+        }
+        bindOptionEvent();
+    });
+}
+
 var renderNavTypeList = function (list, navIndex = 0) {
+    console.log('renderNavTypeList',list)
     list = Array.isArray(list) ? list : [];
     const seenFilterKeys = new Set();
     
@@ -1609,7 +1879,8 @@ var renderNavTypeList = function (list, navIndex = 0) {
         zjbjz: { title: '载具补给站', html: '' },
         gddyx: { title: '固定弹药箱', html: '' },
         gdwq: { title: '固定武器', html: '' },
-        zz: { title: '装置', html: '' }
+        zz: { title: '装置', html: '' },
+        yl: { title: '鱼类', html: '' }
     };
 
     // 分类处理函数
@@ -1623,7 +1894,7 @@ var renderNavTypeList = function (list, navIndex = 0) {
         categories[category].html += `
             <div class="nav-list-item nav-list-item-${index} nav-list-${item.icon} ${visibleMarker[filterKey] ? 'active': ''} ${extraClass} ${item.num === 0? 'hide': ''}" data-index="${index}" data-icon="${item.icon}" data-name="${item.name}" data-mode="${markerMode}" data-filter-key="${filterKey}">
                 <div class="wz-bg">
-                    <div class="wz-icon img_${item.icon} "></div>
+                    ${isWar ? `<div class="wz-icon img_${item.icon} "></div>` : `<div class="wz-icon"><img src="${`${IMG_PRE}/img/lv3/` + item.icon.replace(/^nav_/, '')}.png"/></div>`}
                     <div class="wz-num ${item.num === 1? 'hides': ''}">${item.num}</div>
                 </div>
                 <div class="wz-name">${item?.sub_name ? item.sub_name : item.name}</div>
@@ -1636,8 +1907,15 @@ var renderNavTypeList = function (list, navIndex = 0) {
         const filterKey = getMarkerFilterKey(item);
         if (seenFilterKeys.has(filterKey)) return;
         seenFilterKeys.add(filterKey);
+
+        console.log('item',item);
+        if(!item.name){
+            return
+        }
         
-        if (item.name.indexOf('撤离点') !== -1) {
+        if (item.catalog === 'fish') {
+            addToCategory(item, index, 'yl');
+        } else if (item.name.indexOf('撤离点') !== -1) {
             addToCategory(item, index, 'cld');
         }else if ( item?.name?.indexOf('藏宝图') > -1) {
             addToCategory(item, index, 'cbt');
@@ -1656,7 +1934,7 @@ var renderNavTypeList = function (list, navIndex = 0) {
         // } else if (item.name.indexOf('据点') > -1 && !window.occupy) {
         } else if (item.name.indexOf('据点') > -1) {
             addToCategory(item, index, 'jd');
-        } else if (isWar && (item.name.indexOf('车') > -1 || item.name.indexOf('舟') > -1 || item.name.indexOf('轮式') > -1 || item.name.indexOf('直升机') > -1)) {
+        } else if (isWar && (item.name.indexOf('车') > -1 || item.name.indexOf('舟') > -1 || item.name.indexOf('轮式') > -1 || item.name.indexOf('直升机') > -1 || item.name.indexOf('坦克') > -1)) {
             addToCategory(item, index, 'zj');
         } else if (item.name.indexOf('载具补给站') > -1) {
             addToCategory(item, index, 'zjbjz');
@@ -1751,7 +2029,9 @@ function selectmarker(name) {
         html+=`
         <div class="nav-list-item nav-list-item-${index} nav-list-${item.icon} ${visibleMarker[filterKey] ? 'active': ''} ${extraClass} ${item.num === 0? 'hide': ''}" data-index="${index}" data-icon="${item.icon}" data-name="${item.name}" data-mode="${markerMode}" data-filter-key="${filterKey}">
             <div class="wz-bg">
-                <div class="wz-icon img_${item.icon}"></div>
+                ${item.catalog === 'fish'
+                    ? `<div class="wz-icon"><img src="${`${IMG_PRE}/img/lv3/` + item.icon.replace(/^nav_/, '')}.png"/></div>`
+                    : `<div class="wz-icon img_${item.icon}"></div>`}
                 <div class="wz-num">${item.num}</div>
             </div>
             <div class="wz-name">${item.name}</div>
@@ -1869,6 +2149,11 @@ var bindEvent = function () {
         var index = $(e.target).attr('data-index');
         currLeftNav = index;
         navOptItem.removeClass('active')
+        // ★ 组越界兜底（自 PC 版迁移）：切到组数更少的地图后，残留 tab 点击回退第 0 组，避免取 undefined 崩溃
+        if (Number(index) !== 0 && !isFloor && !navTypeList[index]) {
+            index = '0';
+            currLeftNav = '0';
+        }
         $(`.nav-option-item-${index}`).addClass('active')
         // console.log($(e.target).attr('data-index'));
         if (isFloor) {
@@ -2541,7 +2826,7 @@ function viewChangeToMap () {
             // console.log(`${window.viewChange ? 'g_jdbsd_g': 'g_jdbsd_r'}`);
             var icon = L.divIcon({
                 className: ` map-war-icon`,
-                html: `<div class="map-icon-bg"><img src=" https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/dzc_i/${window.viewChange ? 'g_jdbsd_g': 'g_jdbsd_r'}.png"/></div>`,
+                html: `<div class="map-icon-bg"><img src="${IMG_PRE}/img/dzc_i/${window.viewChange ? 'g_jdbsd_g': 'g_jdbsd_r'}.png"/></div>`,
                 iconSize: [30, 30],			//设置图标大小
                 iconAnchor: [15, 15],		//设置图标偏移
             })
@@ -2550,7 +2835,7 @@ function viewChangeToMap () {
         } else if (this.options.icon.name === "防守方基地") {
             var icon = L.divIcon({
                 className: ` map-war-icon`,
-                html: `<div class="map-icon-bg"><img src=" https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/dzc_i/${window.viewChange ? 'f_jdbsd_r': 'f_jdbsd_g'}.png"/></div>`,
+                html: `<div class="map-icon-bg"><img src="${IMG_PRE}/img/dzc_i/${window.viewChange ? 'f_jdbsd_r': 'f_jdbsd_g'}.png"/></div>`,
                 iconSize: [30, 30],			//设置图标大小
                 iconAnchor: [15, 15],		//设置图标偏移
             })
@@ -2578,7 +2863,7 @@ function resetFloor () {
 
 // 地图难度切换
 function changeMapLv(type) {
-    console.log('changeMapLv', type);
+    console.log('changeMapLv ', type);
     
     // 地图配置映射表
     const mapConfigs = {
@@ -2826,6 +3111,61 @@ function changeMapLv(type) {
             layer: 'cgxg_2f',
             needRemove: true
         },
+        '10_ldz_1F': {
+            info: cgxgInfo,
+            nav: cgxgInfo.floorInfo.navList_ldz_1f,
+            navInfo: cgxgInfo.floorInfo.navList_ldz_1f,
+            icons: cgxgInfo.floorInfo.mapArticle_ldz_1f,
+            poi: selectRegion_cgxg,
+            name: '长弓溪谷',
+            level: '常规',
+            layer: 'cgxg_ldz_1f',
+            needRemove: true
+        },
+        '10_ldz_2F': {
+            info: cgxgInfo,
+            nav: cgxgInfo.floorInfo.navList_ldz_2f,
+            navInfo: cgxgInfo.floorInfo.navList_ldz_2f,
+            icons: cgxgInfo.floorInfo.mapArticle_ldz_2f,
+            poi: selectRegion_cgxg,
+            name: '长弓溪谷',
+            level: '常规',
+            layer: 'cgxg_ldz_2f',
+            needRemove: true
+        },
+        '10_ldz_3F': {
+            info: cgxgInfo,
+            nav: cgxgInfo.floorInfo.navList_ldz_3f,
+            navInfo: cgxgInfo.floorInfo.navList_ldz_3f,
+            icons: cgxgInfo.floorInfo.mapArticle_ldz_3f,
+            poi: selectRegion_cgxg,
+            name: '长弓溪谷',
+            level: '常规',
+            layer: 'cgxg_ldz_3f',
+            needRemove: true
+        },
+        '10_ldz_4F': {
+            info: cgxgInfo,
+            nav: cgxgInfo.floorInfo.navList_ldz_4f,
+            navInfo: cgxgInfo.floorInfo.navList_ldz_4f,
+            icons: cgxgInfo.floorInfo.mapArticle_ldz_4f,
+            poi: selectRegion_cgxg,
+            name: '长弓溪谷',
+            level: '常规',
+            layer: 'cgxg_ldz_4f',
+            needRemove: true
+        },
+        '10_ldz_B1': {
+            info: cgxgInfo,
+            nav: cgxgInfo.floorInfo.navList2_ldz_b1,
+            navInfo: cgxgInfo.floorInfo.navList2_ldz_b1,
+            icons: cgxgInfo.floorInfo.mapArticle2_ldz_b1,
+            poi: selectRegion_cgxg,
+            name: '长弓溪谷',
+            level: '常规',
+            layer: 'cgxg_ldz_b1',
+            needRemove: true
+        },
         '11': {
             info: cgxgInfo,
             nav: navList3_cgxg,
@@ -2890,6 +3230,61 @@ function changeMapLv(type) {
             name: '长弓溪谷',
             level: '机密｜坠机事件',
             layer: 'cgxg_2f',
+            needRemove: true
+        },
+        '11_ldz_1F': {
+            info: cgxgInfo,
+            nav: cgxgInfo.floorInfo.navList2_ldz_1f,
+            navInfo: cgxgInfo.floorInfo.navList2_ldz_1f,
+            icons: cgxgInfo.floorInfo.mapArticle2_ldz_1f,
+            poi: selectRegion_cgxg,
+            name: '长弓溪谷',
+            level: '机密',
+            layer: 'cgxg_ldz_1f',
+            needRemove: true
+        },
+        '11_ldz_2F': {
+            info: cgxgInfo,
+            nav: cgxgInfo.floorInfo.navList2_ldz_2f,
+            navInfo: cgxgInfo.floorInfo.navList2_ldz_2f,
+            icons: cgxgInfo.floorInfo.mapArticle2_ldz_2f,
+            poi: selectRegion_cgxg,
+            name: '长弓溪谷',
+            level: '机密',
+            layer: 'cgxg_ldz_2f',
+            needRemove: true
+        },
+        '11_ldz_3F': {
+            info: cgxgInfo,
+            nav: cgxgInfo.floorInfo.navList2_ldz_3f,
+            navInfo: cgxgInfo.floorInfo.navList2_ldz_3f,
+            icons: cgxgInfo.floorInfo.mapArticle2_ldz_3f,
+            poi: selectRegion_cgxg,
+            name: '长弓溪谷',
+            level: '机密',
+            layer: 'cgxg_ldz_3f',
+            needRemove: true
+        },
+        '11_ldz_4F': {
+            info: cgxgInfo,
+            nav: cgxgInfo.floorInfo.navList2_ldz_4f,
+            navInfo: cgxgInfo.floorInfo.navList2_ldz_4f,
+            icons: cgxgInfo.floorInfo.mapArticle2_ldz_4f,
+            poi: selectRegion_cgxg,
+            name: '长弓溪谷',
+            level: '机密',
+            layer: 'cgxg_ldz_4f',
+            needRemove: true
+        },
+        '11_ldz_B1': {
+            info: cgxgInfo,
+            nav: cgxgInfo.floorInfo.navList2_ldz_b1,
+            navInfo: cgxgInfo.floorInfo.navList2_ldz_b1,
+            icons: cgxgInfo.floorInfo.mapArticle2_ldz_b1,
+            poi: selectRegion_cgxg,
+            name: '长弓溪谷',
+            level: '机密',
+            layer: 'cgxg_ldz_b1',
             needRemove: true
         },
         // 航天基地配置
@@ -3303,9 +3698,15 @@ function changeMapLv(type) {
     mapIcons = config.icons;
     poiInfo = config.poi;
 
+
+
     
     console.log('currMap', currMap);
-    if (Number(currMap) === 1 && Number(currLv) === 1) {
+
+    // ★ 机密难度(11)随机事件过滤只针对"主图"大地图：山火/坠机替换 mapIcons 并重算分类 nav。
+    // 楼层视图（isFloor）必须跳过——否则 dataFilter 的 arrInfo（分类组数组）会覆盖掉扁平 navList2_ldz_*，
+    // 使 changeMapLv 末尾 renderNavTypeList(allNavList) 收到"分类对象"而非 icons 列表，楼层点位列表全空。
+    if (!isFloor && Number(currMap) === 1 && Number(currLv) === 1) {
         if ($('.random-act').text().indexOf('山火') > -1) {
             mapIcons = mapArticle5_cgxg;
             console.log('mapArticle5_cgxg');
@@ -3318,6 +3719,19 @@ function changeMapLv(type) {
         const { arr, arrInfo } = dataFilter(mapIcons);
         allNavList = arrInfo;
         navTypeList = arrInfo;
+    }
+
+    // ★ 追加"鱼类"导航组（自 PC 版迁移）：静态 nav 无鱼入口，按当前地图 icons 聚合 catalog='fish' 条目。
+    // 仅烽火主图（isFloor=楼层扁平 nav / isWar=战场静态 navRegion 均不处理）；ensureFishGroup 幂等、无鱼不追加。
+    if (!isFloor && !isWar) {
+        allNavList = ensureFishGroup(allNavList, mapIcons);
+        navTypeList = ensureFishGroup(navTypeList, mapIcons);
+        // ★ 鱼类条目注入"全部"组：默认视图走 allNavList[0].typeList，静态 nav 本身无鱼，
+        // 不注入则首屏「全部」列表一条鱼都看不到（只有点「鱼类」tab 才出）。恒返回新数组，不污染静态数据。
+        allNavList = injectFishIntoAll(allNavList, getFishTypeList(allNavList));
+        // 一级 tab 与当前地图鱼类组同步：有鱼补 tab、无鱼摘残留 tab（静态结构切图不重建 tab 条）
+        syncFishNavTab();
+        console.log('追加鱼类');
     }
     
     
@@ -3381,6 +3795,13 @@ function changeMapLv(type) {
 
     // 渲染导航类型列表
     if (!isFloor) {
+        // ★ currLeftNav 越界兜底（自 PC 版迁移）：上一张图停在"鱼类"tab 而本图无鱼、或切到组数更少的图时，
+        // 退回第 0 组并同步 tab 高亮，避免 navTypeList[currLeftNav] 取到 undefined 崩溃
+        if (!navTypeList[currLeftNav]) {
+            currLeftNav = '0';
+            $('.nav-option-item').removeClass('active');
+            $('.nav-option-item-0').addClass('active');
+        }
         renderNavTypeList(
             Number(currLeftNav) === 0 ? allNavList[0].typeList : navTypeList[currLeftNav].typeList,
             currLeftNav
@@ -3591,14 +4012,14 @@ function warInit (mapName, type, isBorder = false) {
 
                 myIcon = L.divIcon({
                     className: ` map-war-icon`,
-                    html: `<div class="map-icon-bg" style="transform: translate3d(-50%, -50%, 0)"><img src=" https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/dzc_i/${icon}.png" style="transform:  rotate(${Number(element.rotate) + rotate}deg)"/></div>`,
+                    html: `<div class="map-icon-bg" style="transform: translate3d(-50%, -50%, 0)"><img src="${IMG_PRE}/img/dzc_i/${icon}.png" style="transform:  rotate(${Number(element.rotate) + rotate}deg)"/></div>`,
                     iconSize: [30, 30],			//设置图标大小
                     iconAnchor: [15, 15],		//设置图标偏移
                 })
             } else {
                 myIcon = L.divIcon({
                     className: ` map-war-icon`,
-                    html: `<div class="map-icon-bg"><img src=" https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/dzc_i/${icon}.png"/></div>`,
+                    html: `<div class="map-icon-bg"><img src="${IMG_PRE}/img/dzc_i/${icon}.png"/></div>`,
                     iconSize: [30, 30],			//设置图标大小
                     iconAnchor: [15, 15],		//设置图标偏移
                 })
@@ -3631,7 +4052,7 @@ function warInit (mapName, type, isBorder = false) {
                     this.openPopup();
                     this.setIcon( L.divIcon({
                         className: ` map-war-icon click`,
-                        html: `<div class="map-icon-bg" style="${element?.rotate ? `transform: translate3d(-50%, -50%, 0) rotate(${Number(element?.rotate) + rotate}deg)` : ''}"><img src=" https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/dzc_i/${icon}.png"/></div>`,
+                        html: `<div class="map-icon-bg" style="${element?.rotate ? `transform: translate3d(-50%, -50%, 0) rotate(${Number(element?.rotate) + rotate}deg)` : ''}"><img src="${IMG_PRE}/img/dzc_i/${icon}.png"/></div>`,
                         iconSize: [30, 30],			//设置图标大小
                         iconAnchor: [15, 15],		//设置图标偏移
                     }));
@@ -3730,14 +4151,14 @@ function testWarInit (list) {
     
                     myIcon = L.divIcon({
                         className: ` map-war-icon`,
-                        html: `<div class="map-icon-bg" style="transform: translate3d(-50%, -50%, 0)"><img src=" https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/dzc_i/${icon}.png" style="transform:  rotate(${Number(element.rotate) + rotate}deg)"/></div>`,
+                        html: `<div class="map-icon-bg" style="transform: translate3d(-50%, -50%, 0)"><img src="${IMG_PRE}/img/dzc_i/${icon}.png" style="transform:  rotate(${Number(element.rotate) + rotate}deg)"/></div>`,
                         iconSize: [30, 30],			//设置图标大小
                         iconAnchor: [15, 15],		//设置图标偏移
                     })
                 } else {
                     myIcon = L.divIcon({
                         className: ` map-war-icon`,
-                        html: `<div class="map-icon-bg"><img src=" https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/dzc_i/${icon}.png"/></div>`,
+                        html: `<div class="map-icon-bg"><img src="${IMG_PRE}/img/dzc_i/${icon}.png"/></div>`,
                         iconSize: [30, 30],			//设置图标大小
                         iconAnchor: [15, 15],		//设置图标偏移
                     })
@@ -3770,7 +4191,7 @@ function testWarInit (list) {
                         this.openPopup();
                         this.setIcon( L.divIcon({
                             className: `${isWar ? 'map-war-icon' : 'map-icon'} click`,
-                            html: `<div class="map-icon-bg" style="${element?.rotate ? `transform: translate3d(-50%, -50%, 0) rotate(${Number(element?.rotate) + rotate}deg)` : ''}"><img src=" https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/dzc_i/${icon}.png"/></div>`,
+                            html: `<div class="map-icon-bg" style="${element?.rotate ? `transform: translate3d(-50%, -50%, 0) rotate(${Number(element?.rotate) + rotate}deg)` : ''}"><img src="${IMG_PRE}/img/dzc_i/${icon}.png"/></div>`,
                             iconSize: [30, 30],			//设置图标大小
                             iconAnchor: [15, 15],		//设置图标偏移
                         }));
@@ -4259,6 +4680,11 @@ function dataFilter (mapArticle) {
             titleType: "首领",
             title: "首领",
             typeList: []
+        },
+        {
+            titleType: 'yl',
+            title: '鱼类',
+            typeList: []
         }
     ];
     let numList = {}
@@ -4281,12 +4707,14 @@ function dataFilter (mapArticle) {
             arr.push({
                 name: element.name,
                 icon: 'nav_' + element.icon,
+                catalog: element.catalog,   // ★ 保留 catalog：机密难度经 dataFilter 重建 nav 时，鱼类不丢分类（否则被归入资源点）
             })
             
         } else {
-            // 存在则更新图标
+            // 存在则更新图标 / 补 catalog
             const existingItem = arr.find(item => item.name === element.name);
             existingItem.icon = 'nav_' + element.icon;
+            if (element.catalog) existingItem.catalog = element.catalog;
         }
     }
     
@@ -4300,7 +4728,9 @@ function dataFilter (mapArticle) {
         }
         
 
-        if (element.name === '出生点') {
+        if (element.catalog === 'fish') {
+            arrInfo[5]['typeList'].push(element)
+        } else if (element.name === '出生点') {
             arrInfo[2]['typeList'].push(element)
         } else if (element.name.indexOf('撤离点') > -1) {
             arrInfo[3]['typeList'].push(element)

@@ -4339,7 +4339,7 @@ body::-webkit-scrollbar {
   left: 25px;
   top: 0px;
   width: 670px/2;
-  height: 80%;
+  height: 77%;
   overflow-y: scroll;
   padding-top: 0.1rem;
   border-left: 0.01rem solid rgba(255, 255, 255, 0.1);
@@ -4557,7 +4557,8 @@ body::-webkit-scrollbar {
 .m-index .nav-ctn .nav-type-list .nav-xxj {
   margin-top: 0.1rem;
 }
-.m-index .nav-ctn .nav-type-list .nav-cld {
+.m-index .nav-ctn .nav-type-list .nav-cld,
+.m-index .nav-ctn .nav-type-list .nav-yl {
   margin-top: 0.1rem;
   display: flex;
   width: 3.3rem;
@@ -4565,7 +4566,8 @@ body::-webkit-scrollbar {
   flex-wrap: wrap;
   align-content: flex-start;
 }
-.m-index .nav-ctn .nav-type-list .nav-cld.close {
+.m-index .nav-ctn .nav-type-list .nav-cld.close,
+.m-index .nav-ctn .nav-type-list .nav-yl.close {
   height: 0.3rem;
 }
 .m-index .nav-ctn .nav-type-list .nav-csd {
@@ -5410,6 +5412,9 @@ body::-webkit-scrollbar {
   color: #10f796;
   font-size: 12px;
 }
+.leaflet-popup-content-wrapper .name.fish {
+  margin-bottom: 0.12rem;
+}
 .leaflet-popup-content-wrapper .name span {
   font-size: 9px;
   color: #EAEBEB;
@@ -5479,6 +5484,12 @@ body::-webkit-scrollbar {
   white-space: nowrap;
   color: #eaebeb;
   opacity: 0.5;
+}
+.nav-list-item .wz-icon img {
+  width: 0.32rem;
+  height: 0.32rem;
+  object-fit: contain;
+  display: block;
 }
 .map-floor-change-ctn {
   display: none;
@@ -5927,6 +5938,6 @@ a:focus {
     height: 63%;
   }
   .m-index .nav-ctn .nav-option-ctn .nav-type-list {
-    height: 80%;
+    height: 77%;
   }
 }

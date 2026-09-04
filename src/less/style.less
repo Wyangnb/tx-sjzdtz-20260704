@@ -698,6 +698,15 @@ body {
                         // margin-top: 0.25rem;
                     }
                 }
+                // 摩格旧城区（index 13）：每档递增约 0.275rem（单项高 27.5px），新增地图需同步补一档
+                &.hover_13{
+                    .war-lv-list{
+                        height: 0.28rem;
+                        height: 0.57rem;
+                        margin-top: 3.55rem;
+                        // margin-top: 0.25rem;
+                    }
+                }
                 .map-list{
                     flex-shrink: 0;
                     width: 224px/2;
@@ -998,7 +1007,7 @@ body {
             top: 0px;
             // width: 660px/2;
             width: 670px/2;
-            height: 80%;
+            height: 77%;
             overflow-y: scroll;
             padding-top: 0.1rem;
             border-left: 0.01rem solid rgba(255, 255, 255, 0.1);
@@ -1220,7 +1229,7 @@ body {
             .nav-mode,.nav-my,.nav-xxj{
                 margin-top: 0.1rem;
             }
-            .nav-cld{
+            .nav-cld,.nav-yl{
                 margin-top: 0.1rem;
                 display: flex;
                 width: 3.3rem;
@@ -1231,6 +1240,7 @@ body {
                     height: 0.3rem;
                 }
             }
+            
             .nav-csd{
                 margin-top: 0.1rem;
                 display: flex;
@@ -1931,6 +1941,10 @@ body {
         white-space: nowrap;
         color: #10f796;
         font-size: 12px;
+        // ★ 鱼类等 k1/k2 条目 popup（自 PC 版迁移）：标题下直接接 open-text 行，留出间距
+        &.fish {
+            margin-bottom: 0.12rem;
+        }
         span{
             font-size: 9px;
             color: #EAEBEB;
@@ -2014,6 +2028,14 @@ body {
         color: #eaebeb;
         opacity: 0.5;
     }
+}
+
+// ★ nav 行图标 img 化（自 PC 版迁移）：非战争模式左侧导航行 .wz-icon 内渲染 <img>（CDN lv3 图标），统一尺寸与裁切
+.nav-list-item .wz-icon img {
+    width: 0.32rem;
+    height: 0.32rem;
+    object-fit: contain;
+    display: block;
 }
 
 // lv3新增
@@ -2527,7 +2549,7 @@ a{
         .nav-option-ctn{
             height: 63%;
             .nav-type-list{
-                height: 80%;
+                height: 77%;
             }
         }
    }
