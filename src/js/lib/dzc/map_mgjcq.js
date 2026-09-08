@@ -131,7 +131,7 @@ window["mgjcq_pc"].navRegion = [
         {
           name: "GTQ-35轻型坦克",
           num: 1,
-          icon: "deploy_qxtk",
+          icon: "q_qxtk",
         },
       ],
     },
@@ -331,7 +331,7 @@ window["mgjcq_pc"].navRegionInfo = [
         {
           name: "GTQ-35轻型坦克",
           num: 1,
-          icon: "deploy_qxtk",
+          icon: "q_qxtk",
         },
       ],
     },
@@ -1582,7 +1582,7 @@ window["mgjcq_pc"].mapArticle = [
       "备注": "",
       "region": "摩格旧城区S1",
       "name": "GTQ-35轻型坦克",
-      "icon": "deploy_qxtk",
+      "icon": "q_qxtk",
       "isRegion": "false",
       "x": "67961.188",
       "y": "-86629.437",
@@ -3167,7 +3167,7 @@ window["mgjcq_mobile"].navRegion = [
         {
           name: "GTQ-35轻型坦克",
           num: 1,
-          icon: "deploy_qxtk",
+          icon: "q_qxtk",
         },
       ],
     },
@@ -3367,7 +3367,7 @@ window["mgjcq_mobile"].navRegionInfo = [
         {
           name: "GTQ-35轻型坦克",
           num: 1,
-          icon: "deploy_qxtk",
+          icon: "q_qxtk",
         },
       ],
     },
@@ -4618,7 +4618,7 @@ window["mgjcq_mobile"].mapArticle = [
       "备注": "",
       "region": "摩格旧城区S1",
       "name": "GTQ-35轻型坦克",
-      "icon": "deploy_qxtk",
+      "icon": "q_qxtk",
       "isRegion": "false",
       "x": "67961.188",
       "y": "-86629.437",
