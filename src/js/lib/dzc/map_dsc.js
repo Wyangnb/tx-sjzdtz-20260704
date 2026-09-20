@@ -4553,6 +4553,7 @@ window['dsc_pc'].deploy = [
     "投放方式": "基地旁边小方向盘",
     "允许非队友的友方部署": "否",
     "备注": "GTI1号阵地",
+    "CD": 90,
     "name": "两栖装甲运输车",
     "icon": "deploy_sxzjc",
     "Sector": "S1",
@@ -9110,6 +9111,7 @@ window['dsc_mobile'].deploy = [
     "允许非队友的友方部署": "否",
     "备注": "GTI1号阵地",
     "name": "两栖装甲运输车",
+    "CD": 90,
     "icon": "deploy_sxzjc",
     "Sector": "S1",
     "num": 1

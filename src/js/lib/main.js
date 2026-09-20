@@ -1,5 +1,8 @@
 /* eslint-disable */
-var IMG_PRE = (window.location.href.indexOf(80) > -1) ? '': '//game.gtimg.cn/images/dfm/cp/a20240729directory/';
+// var IMG_PRE = (window.location.href.indexOf(80) > -1) ? '': '//game.gtimg.cn/images/dfm/cp/a20240729directory';
+
+var IMG_PRE = (window.location.href.indexOf('qq.com') > -1) ?  '//game.gtimg.cn/images/dfm/cp/a20240729directory' : '//game.gtimg.cn/images/dfm/cp/a20240729directory';
+
 
 var getQuery = function (name) {
     var m = window.location.search.match(new RegExp('(\\?|&)' + name + '=([^&]*)(&|$)'));
@@ -783,6 +786,7 @@ function syncRegions() {
 }
 
     function refreshMarker2(from, arr) {
+        console.log('refreshMarker2 arr',arr)
         $.each(cacheMarker, function () {
             if (this.options.icon?.polyline) {
                 this.options.icon?.polyline.remove();
@@ -807,9 +811,11 @@ function syncRegions() {
         $.each(arr, function (index, item) {
             var visible = false;
             var that = this;
+
+
             var markerFilterKey = getMarkerFilterKey(item);
             if (from === "filter" && visibleMarker[markerFilterKey]) visible = true;
-            if (from === "filter" && visibleMarker[getMarkerFilterKey({ name: '出生点' })] && item.type === 'revive') {
+            if (from === "filter" && visibleMarker[getMarkerFilterKey({ name: '出生点' })] && item.type === 'revive' && item.name === '出生点') {
                 visible = true;
             }
             if (from === "filter" && visibleMarker[getMarkerFilterKey({ name: '首领' })] && item.type === 'Boss') {
@@ -824,6 +830,7 @@ function syncRegions() {
             // // console.log(this);
             
             if (visible) {
+                console.log('that visible',that.name,that.x,that.y)
                 var floorButtonInfo = getFloorItem(this.floor, item['自定义区域'], null, false);
                 var floorButtonAttrs = floorButtonInfo
                     ? ` data-nav="nav-list-nav_${this.icon}" data-name="${this.name}" data-region="${item['自定义区域'] || ''}" data-floor="${floorButtonInfo.floor_f}" data-index="${this.floor}"`
@@ -1372,18 +1379,13 @@ function addLayer (mapName) {
         pixelToLatLngRatio = -1
     }
     var northEast = L.latLng((mapHeight - 70) * pixelToLatLngRatio, mapWidth * pixelToLatLngRatio); // 右下角  
-    var href = '';
+    var href = `${IMG_PRE}/img/`
     if (!isFloor && mapScaleInfo.href) {
         href = mapScaleInfo.href
-    
     } else if (isFloor && mapScaleInfo.floorInfo?.info?.href) {
         href = mapScaleInfo.floorInfo?.info?.href
-    } else {
-        href = `${IMG_PRE}/img/`
-        //  href = ' https://game.gtimg.cn/images/dfm/cp/a20240729directory/img/'
-        //  href= '../../img/'
     }
-
+    
     if (window.occupy) {
         minZoom = mapScaleInfo.minZoom_s
         initZoom = mapScaleInfo.initZoom_s
@@ -1510,8 +1512,18 @@ function initFloor () {
     
     $('.curr-reigon').text(getSafeRegionName());
     // 楼层切换按钮事件
-    $('.map-floor-item').on('click', enterFloorMode);
-
+    var busy = false;
+    $('.map-floor-item').on('click', function (e) {
+        if (!busy) {
+            busy = true;
+            $(this)
+            .nextAll('.map-floor-item[data-index="0"],.map-floor-item[data-index="1"],.map-floor-item[data-index="2"]')
+            .first()
+            .trigger('click');      // 相邻元素带着自己的事件跑一遍
+            busy = false;
+        }
+        return enterFloorMode.call(this, e);
+    });
     $('.floor-item').on('click', enterFloorMode)
     $('.floor-tips').css('display', 'block');
     bindFloorEvent();
@@ -1527,6 +1539,8 @@ function bindFloorEvent () {
 
 // 进入分层模式通用方法
 function enterFloorMode(e) {
+    console.log('enterFloorMode',e);
+    
     if ($(e.target).hasClass('not-event')) return;
     isFloor = true;
     outFloor = false;
@@ -1908,7 +1922,7 @@ var renderNavTypeList = function (list, navIndex = 0) {
         if (seenFilterKeys.has(filterKey)) return;
         seenFilterKeys.add(filterKey);
 
-        console.log('item',item);
+        // console.log('item',item);
         if(!item.name){
             return
         }
@@ -1934,7 +1948,7 @@ var renderNavTypeList = function (list, navIndex = 0) {
         // } else if (item.name.indexOf('据点') > -1 && !window.occupy) {
         } else if (item.name.indexOf('据点') > -1) {
             addToCategory(item, index, 'jd');
-        } else if (isWar && (item.name.indexOf('车') > -1 || item.name.indexOf('舟') > -1 || item.name.indexOf('轮式') > -1 || item.name.indexOf('直升机') > -1 || item.name.indexOf('坦克') > -1)) {
+        } else if (isWar && (item.name.indexOf('车') > -1 || item.name.indexOf('舟') > -1 || item.name.indexOf('轮式') > -1 || item.name.indexOf('直升机') > -1)) {
             addToCategory(item, index, 'zj');
         } else if (item.name.indexOf('载具补给站') > -1) {
             addToCategory(item, index, 'zjbjz');
@@ -3807,7 +3821,12 @@ function changeMapLv(type) {
             currLeftNav
         );
     } else {
-        renderNavTypeList(allNavList, 0);
+        // 楼层 nav 支持两种形态（按数据实际形态自适应，不改动数据本身）：
+        // 1) 扁平条目数组 [{name,num,icon}...] —— 酒店 navList_firest / 旧版雷达站 navList_ldz_*
+        // 2) 分组组数组 [{titleType:'all', typeList:[...]}, {titleType:'wzd'}] —— 新版雷达站楼层数据
+        // 分组形态取 all 组 typeList 渲染（楼层无一级 tab，分类块标题由 renderNavTypeList 内部按 name 分区生成）
+        const floorGrouped = Array.isArray(allNavList) && allNavList[0] && Array.isArray(allNavList[0].typeList);
+        renderNavTypeList(floorGrouped ? allNavList[0].typeList : allNavList, 0);
     }
 
     bindOptionEvent();
@@ -3816,6 +3835,9 @@ function changeMapLv(type) {
 
 // 战场切换
 function changeWarMap(mapName, type) {
+    // 清除自定义区域绘制
+    clearRegions();
+
     visibleMarker = {}
     mapScaleInfo = window[mapName].info;
     poiInfo =  window[mapName].region;
@@ -4286,7 +4308,7 @@ function initWarSwiper (name, data) {
                         <div class="slide-img ${this.icon}"></div>
                     </div>
                     <div class="slide-info">
-                        <div class="slide-tiem">${this.CD}s</div>
+                        <div class="slide-tiem ${this.CD?'':'hide'}">${this.CD?this.CD+'s':''}</div>
                         <div class="slide-num">可部署:${this.num}</div>
                     </div>
                 </div>
@@ -4300,7 +4322,7 @@ function initWarSwiper (name, data) {
                         <div class="slide-img ${this.icon}"></div>
                     </div>
                     <div class="slide-info">
-                        <div class="slide-tiem">${this.CD}s</div>
+                        <div class="slide-tiem ${this.CD?'':'hide'}">${this.CD?this.CD+'s':''}</div>
                         <div class="slide-num">可部署:${this.num}</div>
                     </div>
                 </div>
@@ -4318,7 +4340,7 @@ function initWarSwiper (name, data) {
                         <div class="slide-img ${this.icon}"></div>
                     </div>
                     <div class="slide-info">
-                        <div class="slide-tiem">${this.CD}s</div>
+                        <div class="slide-tiem ${this.CD?'':'hide'}">${this.CD?this.CD+'s':''}</div>
                         <div class="slide-num">可部署:${this.num}</div>
                     </div>
                 </div>
@@ -4331,7 +4353,7 @@ function initWarSwiper (name, data) {
                         <div class="slide-img ${this.icon}"></div>
                     </div>
                     <div class="slide-info">
-                        <div class="slide-tiem">${this.CD}s</div>
+                        <div class="slide-tiem ${this.CD?'':'hide'}">${this.CD?this.CD+'s':''}</div>
                         <div class="slide-num">可部署:${this.num}</div>
                     </div>
                 </div>
