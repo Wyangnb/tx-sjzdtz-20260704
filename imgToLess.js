@@ -5,21 +5,41 @@ const fs = require('fs');
 const getImageSize = require('image-size');
 
 const path = require('path');
-function getAllDirs (mypath = './src/img/') {
+
+// 留空时遍历 src/img 下的全部文件夹；填写目录名时只处理指定目录。
+// 支持：'bp'、'src/img/bp'、'./src/img/bp'。
+const targetFolder = 'bp';
+const imageRoot = path.resolve(__dirname, './src/img');
+
+function resolveScanRoot (target = '') {
+    if (!target.trim()) return imageRoot;
+
+    const normalized = target.trim().replace(/[\\/]$/, '');
+    const relativeTarget = normalized.replace(/^\.?[\\/]?src[\\/]img[\\/]?/, '');
+    const scanRoot = path.resolve(imageRoot, relativeTarget);
+    const relativeRoot = path.relative(imageRoot, scanRoot);
+    if (relativeRoot.startsWith('..') || path.isAbsolute(relativeRoot)) {
+        throw new Error(`目标文件夹必须位于 ${imageRoot} 内: ${target}`);
+    }
+    if (!fs.existsSync(scanRoot) || !fs.statSync(scanRoot).isDirectory()) {
+        throw new Error(`目标文件夹不存在: ${scanRoot}`);
+    }
+    return scanRoot;
+}
+
+function getAllDirs (mypath = imageRoot) {
     const items = fs.readdirSync(mypath);
 
     let result = '';
-    let result2x = '';
     // 遍历当前目录中所有的文件和文件夹
     let strTemp = function (name) {
-        // if (name.match(/.DS_Store)/)) {
-        if (!name.match(/.png|.jpg|.jpeg/) || name.match(/_2x/) || name.match(/_m/)) {
+        if (!/\.(png|jpg|jpeg)$/i.test(name) || /_2x/i.test(name)) {
             return;
         }
-        const { width, height, type } = getImageSize(name);
-        let name1 = name.replace(/\\/g, '/');
-        let name2 = name1.replace(/src\/img\//g, '');
-        let name3 = name2.replace(/\.\w*/g, '').replace(/\w*\//g, '');
+        const { width, height } = getImageSize(name);
+        const name1 = name.replace(/\\/g, '/');
+        const name2 = name1.replace(`${imageRoot.replace(/\\/g, '/')}/`, '');
+        const name3 = path.basename(name2).replace(/\.\w*$/, '');
         result += `
 .img_${name3} {
     background-image: url('@{img}/${name2}');
@@ -36,42 +56,24 @@ function getAllDirs (mypath = './src/img/') {
 }
         `;
 
-        result2x += `
-.img_${name3} {
-    background-image: url('@{img}/${name2.replace(name3, name3 + '_2x')}');
-}
-        `;
-        result2x += `
-.img_${name3}_s {
-    background-image: url('@{img}/${name2.replace(name3, name3 + '_2x')}');
-}
-        `;
     };
-    items.map(item => {
+    items.forEach(item => {
         let temp = path.join(mypath, item);
 
-        // 若当前的为文件夹
         if (fs.statSync(temp).isDirectory()) {
-            // strTemp(temp); // 存储当前文件夹的名字
-            if (temp.indexOf('map') < 0) {
-                result = result.concat(getAllDirs(temp));
-            }
-        } else { // 进入下一级文件夹访问
-            if (temp.indexOf('map') < 0) {
-                result = result.concat(getAllDirs(temp));
-            }
-     
+            const nested = getAllDirs(temp);
+            result += nested.result;
+        } else {
+            strTemp(temp);
         }
     });
 
-    result = result + `
-@media screen and (min-width: 2560px) {
-` + result2x + `
-}`;
-
     return result;
 };
-fs.writeFile(path.join(path.resolve(__dirname), './src/less/lv3.less'), `@img: '../img/';` + getAllDirs(), function (err) {
+
+const scanRoot = resolveScanRoot(targetFolder);
+const lessContent = getAllDirs(scanRoot);
+fs.writeFile(path.join(path.resolve(__dirname), './src/less/imgs_bp.less'), `@img: '../img/';` + lessContent, function (err) {
     if (err) {
         return console.log(err);
     }

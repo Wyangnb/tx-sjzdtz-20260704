@@ -19,6 +19,15 @@ const handoverDir = /a201[\w]*/.exec(config.handover)[0];
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 var copyItem = [];
+if (fs.existsSync('src/img/bp')) {
+    copyItem.push({ from: 'src/img/bp', to: './ossweb-img/img/bp', flatten: true });
+}
+['map_htzz', 'map_lswdz', 'map_smezy'].forEach(function (name) {
+    if (fs.existsSync('src/img/' + name)) {
+        copyItem.push({ from: 'src/img/' + name, to: './ossweb-img/img/' + name, flatten: true });
+    }
+});
+
 
 if (fs.existsSync('src/img/kf')) {
     copyItem.push({

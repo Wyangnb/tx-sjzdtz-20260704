@@ -50,6 +50,22 @@ if (fs.existsSync('src/img/xdaba')) {
         flatten: true
     });
 }
+if (fs.existsSync('src/img/bp')) {
+    copyItem.push({
+        from: 'src/img/bp',
+        to: './img/bp',
+        flatten: true
+    });
+}
+['map_htzz', 'map_lswdz', 'map_smezy'].forEach(function (name) {
+    if (fs.existsSync('src/img/' + name)) {
+        copyItem.push({
+            from: 'src/img/' + name,
+            to: './img/' + name,
+            flatten: true
+        });
+    }
+});
 if (fs.existsSync('src/img/xdaba')) {
     copyItem.push({
         from: 'src/img/xdaba',
