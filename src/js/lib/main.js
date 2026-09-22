@@ -432,7 +432,7 @@ var currLayer;
 
 // 切换地图
 var dom_changeMapBtn = $('.btn-change-map-ctn')
-var dom_mapList = $('.map-list-ctn')
+var dom_mapList = dom_changeMapBtn.find('.map-list-ctn')
 var isMoveMapList = false;
 var currMap = '0';
 var currLv = '0';
@@ -2225,7 +2225,7 @@ var bindEvent = function () {
             $('.curr-map-ctn').css('z-index', 6)
         }
     })
-    let mapItem =  $('.map-item');
+    let mapItem = dom_changeMapBtn.find('.map-item');
 
     dom_mapList.on('mouseover', function (e) {
         var index = $(e.target).attr('data-index')
@@ -2630,11 +2630,13 @@ var bindEvent = function () {
     })
 
     $('.war-change-text').on('click', () => {
+        if (window.bpMode && window.bpModeApi) window.bpModeApi.exit();
         if (isWar) return;
         enterWarMap();
     })
 
     $('.map-change-text').on('click', () => {
+        if (window.bpMode && window.bpModeApi) window.bpModeApi.exit();
         if (!isWar) return;
         isWar = false;
         

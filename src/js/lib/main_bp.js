@@ -23,10 +23,136 @@ var BP_VIEW_BOUNDS_PADDING = 200;
 var bpCurrentConfig = null;
 var bpMarkerPlayer = null;
 var bpMarkerPlayerIndex = 0;
+var bpTxPlayerLoading = false;
+var bpTxPlayerCallbacks = [];
+var bpPopupPositionHandler = null;
+var bpPopupMoveEndHandler = null;
+var bpPopupRequestId = 0;
+var bpPopupDelayTimer = null;
+var markerPop = $('.marker-pop-ctn').first();
+var markerName = markerPop.find('.marker-name');
+var addressName = markerPop.find('.address-name');
 
-function clearBpMarkerMedia() {
-    var $preview = $('.marker-preview-ctn');
-    var $markerPop = $('.marker-pop-ctn');
+function updateBpMarkerPopupPosition() {
+    if (!currClickMarker || !markerPop || !markerPop.length || !markerPop.hasClass('show') || !map) return;
+    var mapElement = document.getElementById('MapContainer');
+    var rootElement = document.querySelector('.m-index');
+    if (!mapElement || !rootElement || !map.latLngToContainerPoint) return;
+
+    var mapRect = mapElement.getBoundingClientRect();
+    var rootRect = rootElement.getBoundingClientRect();
+    var point = map.latLngToContainerPoint(currClickMarker.getLatLng());
+    var height = markerPop.outerHeight() || 635;
+    // 大于 2048px 时 MapContainer 会被 CSS scale(1.15) 放大，Leaflet
+    // 返回的是未缩放的容器坐标，需要换算成屏幕上的实际坐标。
+    var layoutWidth = mapElement.offsetWidth || mapElement.clientWidth || mapRect.width;
+    var layoutHeight = mapElement.offsetHeight || mapElement.clientHeight || mapRect.height;
+    var scaleX = layoutWidth ? mapRect.width / layoutWidth : 1;
+    var scaleY = layoutHeight ? mapRect.height / layoutHeight : 1;
+    var pointX = mapRect.left - rootRect.left + point.x * scaleX;
+    var pointY = mapRect.top - rootRect.top + point.y * scaleY;
+    // 弹层固定放在点位右侧，预留出点位图标的间距，避免遮挡被点击的点位。
+    var left = pointX + 24;
+    var top = pointY - height / 2;
+    var maxTop = Math.max(12, rootElement.clientHeight - height - 12);
+
+    markerPop.css({
+        left: Math.max(12, left) + 'px',
+        top: Math.max(12, Math.min(top, maxTop)) + 'px',
+        right: 'auto',
+        bottom: 'auto',
+        transform: 'none'
+    });
+}
+
+function bindBpMarkerPopupPosition() {
+    if (!map) return;
+    if (!bpPopupPositionHandler) {
+        bpPopupPositionHandler = function () {
+            updateBpMarkerPopupPosition();
+        };
+    }
+    map.off('move', bpPopupPositionHandler);
+    map.off('zoom', bpPopupPositionHandler);
+    map.on('move', bpPopupPositionHandler);
+    map.on('zoom', bpPopupPositionHandler);
+}
+
+function unbindBpMarkerPopupPosition() {
+    if (!map || !bpPopupPositionHandler) return;
+    map.off('move', bpPopupPositionHandler);
+    map.off('zoom', bpPopupPositionHandler);
+}
+
+function cancelBpMarkerPopupOpen() {
+    bpPopupRequestId += 1;
+    if (map && bpPopupMoveEndHandler) {
+        map.off('moveend', bpPopupMoveEndHandler);
+    }
+    bpPopupMoveEndHandler = null;
+    if (bpPopupDelayTimer) {
+        window.clearTimeout(bpPopupDelayTimer);
+        bpPopupDelayTimer = null;
+    }
+}
+
+function showBpMarkerPopup(point, requestId) {
+    if (!bpMode || requestId !== bpPopupRequestId || !markerPop || !markerPop.length) return;
+
+    var markerTitle = point && (point.role_x !== undefined || point.role_y !== undefined)
+        ? point.name
+        : point && point.point_name;
+    markerName.html(escapeBpHtml(markerTitle || ''));
+    addressName.html(escapeBpHtml(point.name || ''));
+    renderBpMarkerMedia(point);
+    markerPop.addClass('show');
+    bindBpMarkerPopupPosition();
+    updateBpMarkerPopupPosition();
+}
+
+function showBpMarkerPopupAfterMove(point, target, afterMove) {
+    cancelBpMarkerPopupOpen();
+    var requestId = bpPopupRequestId;
+    bpPopupMoveEndHandler = function () {
+        if (map) map.off('moveend', bpPopupMoveEndHandler);
+        bpPopupMoveEndHandler = null;
+        var complete = function () {
+            bpPopupDelayTimer = null;
+            if (!bpMode || requestId !== bpPopupRequestId) return;
+            if (typeof afterMove === 'function') afterMove();
+            showBpMarkerPopup(point, requestId);
+        };
+        bpPopupDelayTimer = window.setTimeout(complete, 250);
+    };
+    map.on('moveend', bpPopupMoveEndHandler);
+    map.flyTo(target, Math.max(map.getZoom(), bpCurrentConfig.info.initZoom));
+}
+
+function renderBpRoleAfterMove(point, markerPos, rolePos) {
+    if (!bpMode || !rolePos) return;
+    bpRoleLine = L.polyline([
+        [markerPos.y, markerPos.x],
+        [rolePos.y, rolePos.x]
+    ], {
+        color: '#EAEBEB',
+        weight: 2,
+        dashArray: '8, 8',
+        interactive: false
+    }).addTo(map);
+    bpRoleLayer = createBpPoint({
+        type: 'role-marker',
+        name: point.role_name || '',
+        icon: point.role_icon,
+        x: point.role_x,
+        y: point.role_y
+    });
+}
+
+function clearBpMarkerMedia($scope) {
+    var hasScope = !!($scope && $scope.length);
+    var $markerPops = hasScope
+        ? $scope.first()
+        : $('.marker-pop-ctn');
     if (bpMarkerPlayer && typeof bpMarkerPlayer.pause === 'function') {
         bpMarkerPlayer.pause();
     }
@@ -34,21 +160,49 @@ function clearBpMarkerMedia() {
         bpMarkerPlayer.destroy();
     }
     bpMarkerPlayer = null;
-    $preview.find('.marker-pop-video, .marker-pop-video-ctn').remove();
-    $markerPop.find('.marker-pop-desc').remove();
-    $preview.find('.marker-preview').attr('src', '').hide();
-    $preview.hide();
+    $markerPops.each(function () {
+        var $markerPop = $(this);
+        var $preview = $markerPop.find('.marker-preview-ctn').first();
+        $preview.find('.marker-pop-video, .marker-pop-video-ctn').remove();
+        $markerPop.find('.marker-pop-desc').remove();
+        $preview.find('.marker-preview').attr('src', '').hide();
+        $preview.hide();
+    });
 }
 
-function initBpMarkerPlayer(containerId, vid) {
+function initBpMarkerPlayer(containerId, vid, width, height, assignGlobal) {
     if (typeof window.Txplayer !== 'function') return;
-    bpMarkerPlayer = new window.Txplayer({
+    var player = new window.Txplayer({
         containerId: containerId,
         vid: vid,
-        width: '600',
-        height: '400',
+        width: width || '600',
+        height: height || '400',
         autoplay: true
     });
+    if (assignGlobal !== false) bpMarkerPlayer = player;
+    return player;
+}
+
+function loadBpTxPlayer(callback) {
+    if (typeof window.Txplayer === 'function') {
+        callback();
+        return;
+    }
+    bpTxPlayerCallbacks.push(callback);
+    if (bpTxPlayerLoading) return;
+    bpTxPlayerLoading = true;
+    var script = document.createElement('script');
+    script.src = '//vm.gtimg.cn/tencentvideo/txp/js/txplayer.js';
+    script.onload = function () {
+        bpTxPlayerLoading = false;
+        var callbacks = bpTxPlayerCallbacks.splice(0);
+        callbacks.forEach(function (render) { render(); });
+    };
+    script.onerror = function () {
+        bpTxPlayerLoading = false;
+        bpTxPlayerCallbacks.length = 0;
+    };
+    document.head.appendChild(script);
 }
 
 function getBpMarkerImageUrl(imageName) {
@@ -61,12 +215,14 @@ function getBpMarkerImageUrl(imageName) {
     return getBpAssetRoot() + image + '.jpg';
 }
 
-function renderBpMarkerMedia(point) {
+function renderBpMarkerMedia(point, $scope) {
     if (!bpMode) return;
-    var $preview = $('.marker-preview-ctn');
+    var $markerPop = $scope && $scope.length ? $scope : $('.marker-pop-ctn').first();
+    var $preview = $markerPop.find('.marker-preview-ctn').first();
     if (!$preview.length) return;
 
-    clearBpMarkerMedia();
+    clearBpMarkerMedia($markerPop);
+    $preview.find('.marker-pop-video, .marker-pop-video-ctn').remove();
     $preview.find('.marker-preview').attr('src', '').hide();
 
     var vid = point && point.vid ? String(point.vid).trim() : '';
@@ -79,16 +235,11 @@ function renderBpMarkerMedia(point) {
             'class': 'marker-pop-video-ctn'
         }).appendTo($preview);
         $preview.show();
-        if (typeof window.Txplayer === 'function') {
-            initBpMarkerPlayer(containerId, vid);
-        } else {
-            var script = document.createElement('script');
-            script.src = '//vm.gtimg.cn/tencentvideo/txp/js/txplayer.js';
-            script.onload = function () {
-                if ($('#' + containerId).length && bpMode) initBpMarkerPlayer(containerId, vid);
-            };
-            document.head.appendChild(script);
-        }
+        loadBpTxPlayer(function () {
+            if ($('#' + containerId).length && bpMode && document.body.contains($markerPop[0])) {
+                initBpMarkerPlayer(containerId, vid);
+            }
+        });
     } else if (img) {
         $preview.find('.marker-preview').attr('src', img).show();
         $preview.show();
@@ -99,7 +250,7 @@ function renderBpMarkerMedia(point) {
     if ((vid || img) && pointDesc) {
         $('<div>', {
             'class': 'marker-pop-desc'
-        }).text(pointDesc).appendTo($('.marker-pop-ctn'));
+        }).text(pointDesc).appendTo($markerPop);
     }
 }
 
@@ -187,6 +338,7 @@ function handleBpMapClick(event) {
     if (!bpMode || !bpCurrentConfig || !event.latlng) return;
 
     // 地图点击会关闭点位弹窗，先销毁腾讯视频播放器，避免视频继续播放。
+    cancelBpMarkerPopupOpen();
     clearBpMarkerMedia();
     clearBpPointActiveState();
     clearBpRoleLayer();
@@ -196,6 +348,7 @@ function handleBpMapClick(event) {
     console.log( Number(worldPos.x.toFixed(0)), Number(worldPos.y.toFixed(0)));
     $('.bp-nav-ctn').removeClass('show')
     $('.marker-pop-ctn').removeClass('show')
+    unbindBpMarkerPopupPosition();
 
     // console.log('爆破地图点击坐标', {
     //     map: bpCurrentConfig.key,
@@ -321,7 +474,9 @@ function createBpPoint(point) {
             iconAnchor: [15, 15]
         }),
         zIndexOffset: 500
-    }).addTo(map);
+    });
+
+    marker.addTo(map);
 
     marker.on('click', function (event) {
         if (event && event.originalEvent && L.DomEvent && L.DomEvent.stopPropagation) {
@@ -329,35 +484,19 @@ function createBpPoint(point) {
         }
         clearBpPointActiveState();
         if (marker.getElement()) $(marker.getElement()).addClass('act');
+        clearBpRoleLayer();
+        var rolePos = null;
         if (point.role_x !== undefined && point.role_y !== undefined && point.role_icon) {
-            clearBpRoleLayer();
-            var rolePos = getBpMapPos(point.role_x, point.role_y);
-            bpRoleLine = L.polyline([
-                [pos.y, pos.x],
-                [rolePos.y, rolePos.x]
-            ], {
-                color: '#EAEBEB',
-                weight: 2,
-                dashArray: '8, 8',
-                interactive: false
-            }).addTo(map);
-            bpRoleLayer = createBpPoint({
-                type: 'role-marker',
-                name: point.role_name || '',
-                icon: point.role_icon,
-                x: point.role_x,
-                y: point.role_y
-            });
+            rolePos = getBpMapPos(point.role_x, point.role_y);
         }
         currClickMarker = marker;
         marker.myIcon = marker.getIcon();
-        if (markerPop && markerPop.length) {
-            markerName.html(escapeBpHtml(point.point_name || point.name || ''));
-            addressName.html(point.name);
-            renderBpMarkerMedia(point);
-            markerPop.addClass('show');
-        }
-        map.flyTo([pos.y, pos.x], Math.max(map.getZoom(), bpCurrentConfig.info.initZoom));
+        markerPop.removeClass('show');
+        clearBpMarkerMedia();
+        unbindBpMarkerPopupPosition();
+        showBpMarkerPopupAfterMove(point, [pos.y, pos.x], function () {
+            renderBpRoleAfterMove(point, pos, rolePos);
+        });
     });
     return marker;
 }
@@ -461,7 +600,8 @@ function saveBpMainState() {
         currFloorRegion: currFloorRegion,
         currMapFloor: currMapFloor,
         isZj: isZj,
-        mapTitle: $('.curr-map-name').text(),
+        // 页面有两个同步显示的地图名称，只读取一个，避免 jQuery 把集合文本拼接起来。
+        mapTitle: $('.curr-map-name').first().text(),
         mapLevel: $('.curr-map-lv').text()
     };
 }
@@ -470,16 +610,16 @@ function setBpUi(active) {
     $('.m-index').toggleClass('bp-mode', active);
     $('.curr-map-ctn').toggleClass('bp-mode', active);
     $('.marker-pop-ctn').toggleClass('bp-mode', active);
+    $('.nav-ctn').toggleClass('bp-mode', active);
     $('.btn-bp-change').toggleClass('bp-hidden', active);
     $('.btn-war-change2').toggleClass('bp-hidden', !active).css('display', active ? 'flex' : '');
-    $('.btn-war-change').toggleClass('war', !active && isWar);
-    if (active) $('.btn-war-change').removeClass('war');
-    $('.btn-change-map-ctn, .btn-floor-mod, .btn-view-change, .type-change-ctn, .select-region-ctn, .nav-ctn, .curr-random, .curr-map-lv, .btn-nav-state')
+    $('.btn-war-change')
+        .toggleClass('bp', active)
+        .toggleClass('war', !active && isWar)
+        .toggleClass('fh', !active && !isWar);
+    $('.btn-floor-mod, .btn-view-change, .type-change-ctn, .select-region-ctn, .curr-random, .curr-map-lv')
         .toggleClass('bp-hidden', active);
     $('.btn-bp-change .bp-change-text').text(active ? '退出爆破' : '爆破模式');
-    if (active && bpState && bpState.isWar) {
-        $('.btn-war-change .war-change-text').text('全面战场');
-    }
 }
 
 function setBpMapMenuActive(mapKey) {
@@ -524,6 +664,10 @@ function switchBpMap(mapKey, options) {
 
     if (!bpMode) return enterBpMode(mapOptions);
 
+    cancelBpMarkerPopupOpen();
+    clearBpMarkerMedia();
+    markerPop.removeClass('show');
+    unbindBpMarkerPopupPosition();
     bpCurrentConfig = config;
     setBpMapMenuActive(config.key);
     bpSelectedPointKeys = {};
@@ -584,11 +728,28 @@ function getBpPointEntries(type) {
 
 function getBpEntryMapPoints(entry) {
     var result = [];
+    function hasCoordinate(value) {
+        return value !== undefined && value !== null && String(value).trim() !== '' && isFinite(Number(value));
+    }
     function collect(points) {
         (Array.isArray(points) ? points : []).forEach(function (point) {
             if (!point) return;
-            if (point.x !== undefined && point.y !== undefined) result.push(point);
+            if (hasCoordinate(point.x) && hasCoordinate(point.y)) result.push(point);
             if (Array.isArray(point.points)) collect(point.points);
+        });
+    }
+    collect(entry && entry.items);
+    return result;
+}
+
+// 返回菜单中的全部叶子点位。技能点可能暂时没有坐标，仍需要保留在列表中。
+function getBpEntryPoints(entry) {
+    var result = [];
+    function collect(points) {
+        (Array.isArray(points) ? points : []).forEach(function (point) {
+            if (!point) return;
+            if (Array.isArray(point.points) && point.points.length) collect(point.points);
+            else result.push(point);
         });
     }
     collect(entry && entry.items);
@@ -629,7 +790,7 @@ function getBpSelectedMapPoints() {
 function getBpRolePointEntries(entry) {
     var groups = {};
     var entries = [];
-    getBpEntryMapPoints(entry).forEach(function (point) {
+    getBpEntryPoints(entry).forEach(function (point) {
         if (!isBpCampPoint(point)) return;
         var name = point.point_name || point.name || '未命名点位';
         if (!groups[name]) {
@@ -652,7 +813,8 @@ function renderBpPointItems($container, entries, className, onClick) {
     entries.forEach(function (entry, index) {
         var icon = entry.icon ? 'img_' + String(entry.icon).replace(/[^a-zA-Z0-9_-]/g, '') + '_s' : '';
         var entryKey = entry.key || getBpEntryKey('', entry);
-        var selectedClass = bpSelectedPointKeys[entryKey] ? ' act' : '';
+        var hasMapPoints = getBpEntryMapPoints(entry).length > 0;
+        var selectedClass = hasMapPoints && bpSelectedPointKeys[entryKey] ? ' act' : '';
         var price = getBpEntryPrice(entry);
         var nameClass = price ? '' : ' no-price';
         $container.append(
@@ -667,6 +829,16 @@ function renderBpPointItems($container, entries, className, onClick) {
     $container.find('.' + className.split(' ').join('.')).off('click.bpPoint').on('click.bpPoint', function () {
         onClick(entries[Number($(this).attr('data-index'))], $(this));
     });
+}
+
+function updateBpPointListMask() {
+    var pointList = document.querySelector('.bp-point-list');
+    if (!pointList) return;
+
+    var scrollHeight = pointList.scrollHeight - pointList.clientHeight;
+    var hasOverflow = scrollHeight > 1;
+    var isAtBottom = hasOverflow && scrollHeight - pointList.scrollTop <= 10;
+    $('.bp-nav-ctn').toggleClass('bot', isAtBottom);
 }
 
 function renderBpPointList(type) {
@@ -721,10 +893,15 @@ function renderBpPointList(type) {
                 return Object.assign({}, skill, { key: roleKey + ':' + skill.name });
             });
             skills.forEach(function (skill) {
-                bpSelectedPointKeys[skill.key] = true;
+                if (getBpEntryMapPoints(skill).length) bpSelectedPointKeys[skill.key] = true;
+                else delete bpSelectedPointKeys[skill.key];
             });
             $('.bp-skill-title').show();
             renderBpPointItems($skillList, skills, 'bp-skill-item', function (skill, $skillItem) {
+                if (!getBpEntryMapPoints(skill).length) {
+                    $skillItem.removeClass('act').addClass('not-data');
+                    return;
+                }
                 var skillSelected = !!bpSelectedPointKeys[skill.key];
                 if (skillSelected) delete bpSelectedPointKeys[skill.key];
                 else bpSelectedPointKeys[skill.key] = true;
@@ -775,6 +952,7 @@ function renderBpPointList(type) {
             return true;
         });
     }
+    updateBpPointListMask();
     return entries;
 }
 
@@ -792,7 +970,10 @@ function resetBpChoose() {
 function exitBpMode() {
     if (!bpMode) return true;
 
+    cancelBpMarkerPopupOpen();
     clearBpMarkerMedia();
+    markerPop.removeClass('show');
+    unbindBpMarkerPopupPosition();
     clearBpLayers(bpPointLayers);
     clearBpLayers(bpRegionLayers);
     clearBpRoleLayer();
@@ -847,9 +1028,12 @@ function initBpMode() {
     $('.btn-war-change2').addClass('bp-hidden');
     $('.btn-close-marker-pop').off('click.bpRole').on('click.bpRole', function () {
         if (!bpMode) return;
+        cancelBpMarkerPopupOpen();
         clearBpPointActiveState();
         clearBpRoleLayer();
         clearBpMarkerMedia();
+        markerPop.removeClass('show');
+        unbindBpMarkerPopupPosition();
     });
 
     $('.bp-curr-mode-ctn').off('click.bpCamp').on('click.bpCamp', function (event) {
@@ -872,18 +1056,11 @@ function initBpMode() {
         }
     });
 
-    // 爆破模式下切换到全面战场；移除常规模式的旧绑定，避免重复切换状态。
-    $('.btn-war-change').off('click').on('click.bpWar', function (event) {
+    // 三个模式入口分别处理点击，避免点击爆破或烽火地带时误进入全面战场。
+    $('.btn-war-change .bp-change-text').off('click.bp').on('click.bp', function (event) {
         event.preventDefault();
-        event.stopImmediatePropagation();
-        if (bpMode) {
-            // 爆破模式是从战场进入时，退出爆破即可恢复战场，避免再次切回常规模式。
-            var wasWarMode = !!(bpState && bpState.isWar);
-            exitBpMode();
-            if (!wasWarMode) enterWarMap();
-            return;
-        }
-        enterWarMap();
+        event.stopPropagation();
+        if (!bpMode) enterBpMode(getQuery('bp') || BP_DEFAULT_MAP);
     });
 
     $('.btn-war-change2').off('click.bpWar').on('click.bpWar', function (event) {
@@ -897,12 +1074,22 @@ function initBpMode() {
     if (queryMap) enterBpMode(queryMap === '1' ? BP_DEFAULT_MAP : queryMap);
 }
 
-$('.curr-map-name').on('click', function () {
-    $('.bp-map-change').toggleClass('show')
-})
-
-
 // 爆破地图菜单：data-map 对应 BP_MAP_CONFIGS 中的地图 key。
+var bpMapChangeBtn = $('.btn-bp-change-map-ctn');
+var bpMapList = bpMapChangeBtn.find('.map-list-ctn');
+
+bpMapChangeBtn.off('mouseenter.bpMapMenu').on('mouseenter.bpMapMenu', function () {
+    bpMapList.css({height: '1rem', width: '1.2rem'});
+    bpMapChangeBtn.css('height', '1.5rem').addClass('hover');
+    $('.curr-map-ctn').css('z-index', 7);
+});
+
+bpMapChangeBtn.off('mouseleave.bpMapMenu').on('mouseleave.bpMapMenu', function () {
+    bpMapList.css({height: '0px', width: '1.3rem'});
+    bpMapChangeBtn.css('height', '0.3rem').removeClass('hover');
+    $('.curr-map-ctn').css('z-index', 6);
+});
+
 $('.bp-map-item').off('click.bpMap').on('click.bpMap', function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -917,7 +1104,8 @@ $('.bp-map-item').off('click.bpMap').on('click.bpMap', function (e) {
 
 // 显示菜单栏
 $('.btn-nav-state-bp').on('click', function () {
-    $('.bp-nav-ctn').addClass('show')
+    $('.bp-nav-ctn').removeClass('bot').addClass('show');
+    window.requestAnimationFrame(updateBpPointListMask);
 })
 
 // 关闭菜单栏
@@ -929,6 +1117,19 @@ $('.bp-btns-item').off('click.bpPointType').on('click.bpPointType', function (e)
     e.preventDefault();
     e.stopPropagation();
     var $item = $(e.currentTarget);
+    if ($item.hasClass('bp-btn-normal')) {
+        var normalEntries = getBpPointEntries('normal');
+        normalEntries.forEach(function (entry) {
+            if (getBpEntryMapPoints(entry).length) {
+                bpSelectedPointKeys[getBpEntryKey('normal', entry)] = true;
+            }
+        });
+        $('.bp-btns-item').removeClass('act');
+        $item.addClass('act');
+        renderBpPointList('normal');
+        generateBpPoints(getBpSelectedMapPoints());
+        return;
+    }
     var wasActive = $item.hasClass('act');
     $('.bp-btns-item').removeClass('act');
     if (!wasActive) $item.addClass('act');
@@ -940,6 +1141,8 @@ $('.bp-nav-ctn .reset-choose').off('click.bpReset').on('click.bpReset', function
     event.stopImmediatePropagation();
     resetBpChoose();
 });
+
+$('.bp-point-list').off('scroll.bpMask').on('scroll.bpMask', updateBpPointListMask);
 
 window.bpModeApi = {
     enter: enterBpMode,

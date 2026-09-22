@@ -1,29 +1,61 @@
+
 .btn-war-change{
     display: flex;
     align-items: center;
+    justify-content: space-between;
     position: absolute;
     left: 0.25rem;
     top: 9%;
+    width: 330px;
     &.war{
         .fhdd{
-            .img_map_type_fhdd;
+            .img_map_type_fhdd_s;
             &:hover{
-                .img_map_type_fhdd_hover;
+                .img_map_type_fhdd_hover_s;
             }
         }
         .qmzc{
-            .img_map_type_qmzc_act;
+            .img_map_type_qmzc_act_s;
+        }
+        .bp{
+            .img_map_type_bp_s;
+            &:hover{
+                .img_map_type_bp_hover_s;
+            }
         }
     }
     &.fh{
         .qmzc{
-            .img_map_type_qmzc;
+            .img_map_type_qmzc_s;
             &:hover{
-                .img_map_type_qmzc_hover;
+                .img_map_type_qmzc_hover_s;
             }
         }
         .fhdd{
-            .img_map_type_fhdd_act;
+            .img_map_type_fhdd_act_s;
+        }
+        .bp{
+            .img_map_type_bp_s;
+            &:hover{
+                .img_map_type_bp_hover_s;
+            }
+        }
+    }
+    &.bp{
+        .qmzc{
+            .img_map_type_qmzc_s;
+            &:hover{
+                .img_map_type_qmzc_hover_s;
+            }
+        }
+        .fhdd{
+            .img_map_type_fhdd_s;
+            &:hover{
+                .img_map_type_fhdd_hover_s;
+            }
+        }
+        .bp{
+            .img_map_type_bp_act_s;
         }
     }
     .war-change-text{
@@ -33,8 +65,11 @@
     .map-change-text{
         cursor: pointer;
     }
+    .bp-change-text{
+        cursor: pointer;
+    }
     .war-change-text{
-        margin-left: 15px;
+        // margin-left: 15px;
     }
 }
 .btn-view-change{

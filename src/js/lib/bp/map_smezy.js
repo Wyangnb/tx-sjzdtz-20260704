@@ -5,12 +5,12 @@ var smezyInfo = {
     boundsH: 256,
     centerX: 91930.156250,
     centerY: 140600.812500,
-    minZoom: 1,
-    initZoom: 1,
-    maxZoom: 3,
-    bj: 128,
-    initX: -105,
-    initY: 135
+    minZoom: 2,
+   initZoom: 2.2,
+   maxZoom: 3,
+   bj: 128,
+   initX: -115,
+   initY: 130,
 };
 
 // 点位由菜单按需传入地图，不会在进入模式时自动显示。
@@ -182,6 +182,19 @@ var selectPoint_smezy = [
         "icon": "icon_ln",
         "points": [
             {
+                "name": "",
+                "point_name": "侦察箭矢",
+                "point_desc": "",
+                "camp": "防守",
+                "icon": "icon_zcjs",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
                 "name": "B点反弹电箭",
                 "point_name": "电击箭矢",
                 "point_desc": "防守B点，投掷道具反弹远距离压制",
@@ -189,10 +202,36 @@ var selectPoint_smezy = [
                 "icon": "icon_djjs",
                 "vid":"w12885iyscw",
                 "price": "200",
-                "x": "90380",
-                "y":"-138877",
-                "role_x": "86968",
-                "role_y": "-143014"
+               "x": "90311",
+                "y":"-138774",
+                "role_x": "87003",
+                "role_y": "-143083"
+            },
+            {
+                "name": "B点反弹电箭",
+                "point_name": "电击箭矢",
+                "point_desc": "防守B区前厅，投掷道具反弹远距离压制",
+                "camp": "防守",
+                "icon": "icon_djjs",
+                "vid":"i12881cepc3",
+                "price": "200",
+                "x": "88209",
+                "y":"-139911",
+                "role_x": "87313",
+                "role_y": "-141842"
+            },
+            {
+                "name": "A点压制防守闪击",
+                "point_name": "电击箭矢",
+                "point_desc": "防守A点，投掷道具反弹压制防守敌人闪击",
+                "camp": "防守",
+                "icon": "icon_djjs",
+                "vid":"x1288g1s380",
+                "price": "200",
+                "x": "97615",
+                "y":"-138463",
+                "role_x": "96341",
+                "role_y": "-140601"
             },
             {
                 "name": "B点远距离手雷",
@@ -221,17 +260,43 @@ var selectPoint_smezy = [
                 "role_y": "-142566"
             },
             {
-                "name": "B点反弹电箭",
-                "point_name": "电击箭矢",
-                "point_desc": "防守B区前厅，投掷道具反弹远距离压制",
+                "name": "",
+                "point_name": "敌情追踪",
+                "point_desc": "",
                 "camp": "防守",
+                "icon": "icon_dqzz",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "侦察箭矢",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_zcjs",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "电击箭矢",
+                "point_desc": "",
+                "camp": "进攻",
                 "icon": "icon_djjs",
-                "vid":"i12881cepc3",
-                "price": "200",
-                "x": "88209",
-                "y":"-139911",
-                "role_x": "87313",
-                "role_y": "-141842"
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
             },
             {
                 "name": "前厅反弹雷压制步梯",
@@ -247,18 +312,19 @@ var selectPoint_smezy = [
                 "role_y": "-139360"
             },
             {
-                "name": "A点压制防守闪击",
-                "point_name": "电击箭矢",
-                "point_desc": "防守A点，投掷道具反弹压制防守敌人闪击",
-                "camp": "防守",
-                "icon": "icon_djjs",
-                "vid":"x1288g1s380",
-                "price": "200",
-                "x": "97615",
-                "y":"-138463",
-                "role_x": "96341",
-                "role_y": "-140601"
+                "name": "",
+                "point_name": "敌情追踪",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_dqzz",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
             },
+            
         ]
     },
     {
@@ -267,30 +333,69 @@ var selectPoint_smezy = [
         "icon": "icon_myr",
         "points": [
             {
+                "name": "",
+                "point_name": "防御型声波无人机",
+                "point_desc": "",
+                "camp": "防守",
+                "icon": "icon_wrj",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
                 "name": "B点反弹瞬爆雷",
                 "point_name": "强化型破片手雷",
-                "point_desc": "在最右侧防守B区，反弹墙投掷手雷，对墙后敌人造成伤害",
+                "point_desc": "防守B点，投掷道具反弹远距离压制",
                 "camp": "防守",
                 "icon": "icon_spzd",
-                "vid":"e12887xycm9",
+                "vid":"i1288dvxp6z",
                 "price": "250",
-                "x": "91168",
-                "y":"-54564",
-                "role_x": "92025",
-                "role_y": "-56307"
+                "x": "90311",
+                "y":"-138774",
+                "role_x": "87003",
+                "role_y": "-143083"
             },
             {
                 "name": "B点手雷炸煤气罐",
                 "point_name": "强化型破片手雷",
-                "point_desc": "在左路防守B区，反弹墙投掷手雷，引爆煤气罐，同时再向后方投掷手雷压制",
+                "point_desc": "防守B点，投掷道具反弹远距离压制楼梯口敌人",
                 "camp": "防守",
                 "icon": "icon_spzd",
-                "vid":"r1288cueiio",
+                "vid":"k1288qja4p2",
                 "price": "250",
-                "x": "95305",
-                "y":"-55450",
-                "role_x": "93562",
-                "role_y": "-55480"
+                "x": "91207",
+                "y":"-140670",
+                "role_x": "87003",
+                "role_y": "-142497"
+            },
+            {
+                "name": "",
+                "point_name": "声波陷阱",
+                "point_desc": "",
+                "camp": "防守",
+                "icon": "icon_sbxj",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "减震防御",
+                "point_desc": "",
+                "camp": "防守",
+                "icon": "icon_jzfy",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
             },
         ]
     },
@@ -299,6 +404,19 @@ var selectPoint_smezy = [
         "name": "液氮",
         "icon": "icon_yd",
         "points": [
+            {
+                "name": "",
+                "point_name": "液氮榴弹发射器",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_ldfsq",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
             {
                 "name": "A点西门冷罐高抛",
                 "point_name": "杜瓦冷罐",
@@ -324,7 +442,33 @@ var selectPoint_smezy = [
                 "y":"-142635",
                 "role_x": "95100",
                 "role_y": "-136464"
-            }
+            },
+            {
+                "name": "",
+                "point_name": "智能震撼弹",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_znzhd",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "被动：冰冻",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_bd",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
         ]
     },
     {
@@ -332,6 +476,32 @@ var selectPoint_smezy = [
         "name": "乌鲁鲁",
         "icon": "icon_wll",
         "points": [
+            {
+                "name": "",
+                "point_name": "复合制导巡飞弹",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_dxfd",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "速凝掩体",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_snyt",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
             {
                 "name": "A点西门燃烧弹高抛",
                 "point_name": "复合型燃烧弹",
@@ -357,7 +527,21 @@ var selectPoint_smezy = [
                 "y":"-142635",
                 "role_x": "95100",
                 "role_y": "-136464"
-            }
+            },
+            {
+                "name": "",
+                "point_name": "高分子防护材料",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_fhcl",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
         ]
     },
 ];
+

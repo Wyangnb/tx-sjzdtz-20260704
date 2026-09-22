@@ -6,10 +6,10 @@ var htzzzInfo = {
    centerX: 67177.750000,
    centerY: 126823.210938,
    minZoom: 2,
-   initZoom: 2.2,
+   initZoom: 2,
    maxZoom: 3,
    bj: 128,
-   initX: -115,
+   initX: -125,
    initY: 130,
 }
 var selectRegion_htzzz = [
@@ -115,7 +115,7 @@ var selectPoint_htzzz = [
     {
         "type": "normal",
         "name": "区域点位",
-        "point_name": "中路",
+        "point_name": "中路桥",
         "icon": "icon_csd",
         "img": "htzzz_zl",
         "x": "67066.036",
@@ -182,6 +182,71 @@ var selectPoint_htzzz = [
         "icon": "icon_ln",
         "points": [
             {
+                "name": "",
+                "point_name": "侦察箭矢",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_zcjs",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "电击箭矢",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_djjs",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "中路排点炸烟雷",
+                "point_name": "增强型破片手雷",
+                "point_desc": "在停车场白车前根据小地图落点调整准星，可精准炸掉中路灭火器",
+                "camp": "进攻",
+                "icon": "icon_sld",
+                "vid":"r1288bl7pj1",
+                "price": "250",
+                "x": "66937",
+                "y":"-128925",
+                "role_x": "69453",
+                "role_y": "-121815"
+            },
+            {
+                "name": "",
+                "point_name": "敌情追踪",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_dqzz",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "侦察箭矢",
+                "point_desc": "",
+                "camp": "防守",
+                "icon": "icon_zcjs",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
                 "name": "A区大门电箭防守",
                 "point_name": "电击箭矢",
                 "point_desc": "瞄准白色箱左侧反弹蓄满射出电箭，防守A大门",
@@ -198,27 +263,41 @@ var selectPoint_htzzz = [
                 "name": "控制室电箭防守",
                 "point_name": "电击箭矢",
                 "point_desc": "B2楼控制室贴紧控制台，瞄准窗框反弹蓄满射出，防止B小压出",
-                "camp": "进攻",
+                "camp": "防守",
                 "icon": "icon_djjs",
                 "vid":"j1288qjywyb",
                 "price": "200",
-                "x": "66954.397",
-                "y":"-128784.647",
-                "role_x": "69457.554",
-                "role_y": "-121858.304"
+                "x": "64147",
+                "y":"-129408",
+                "role_x": "63827",
+                "role_y": "-129398"
+            },
+            
+            {
+                "name": "A点远距离手雷",
+                "point_name": "增强型破片手雷",
+                "point_desc": "在A二楼平台白箱后，瞄准天花板下端投掷手雷，对集装箱后敌人造成伤害",
+                "camp": "防守",
+                "icon": "icon_sld",
+                "vid":"q1288hv8218",
+                "price": "250",
+                "x": "71872",
+                "y":"-124290",
+                "role_x": "72683",
+                "role_y": "-130809"
             },
             {
-                "name": "中路排点炸烟雷",
-                "point_name": "增强型破片手雷",
-                "point_desc": "在停车场白车前根据小地图落点调整准星，可精准炸掉中路灭火器",
-                "camp": "进攻",
-                "icon": "icon_sld",
-                "vid":"r1288bl7pj1",
-                "price": "250",
-                "x": "64129.138",
-                "y":"-129426.578",
-                "role_x": "63829.763",
-                "role_y": "-129426.578"
+                "name": "",
+                "point_name": "敌情追踪",
+                "point_desc": "",
+                "camp": "防守",
+                "icon": "icon_dqzj",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
             },
         ]
     },
@@ -227,19 +306,6 @@ var selectPoint_htzzz = [
         "name": "威龙",
         "icon": "icon_wl",
         "points": [
-            {
-                "name": "B区抛射虎蹲炮",
-                "point_name": "虎蹲炮",
-                "point_desc": "贴墙使用虎蹲准星下方对准集装箱，瞄准电线杆，控制前往B大的敌人",
-                "camp": "防守",
-                "icon": "icon_hdd",
-                "vid": "w1288xmvj4h",
-                "price": "",
-                "x": "62045.04",
-                "y":"-126383.967",
-                "role_x": "62772.72",
-                "role_y": "-128754.127"
-            },
             {
                 "name": "A区抛射虎蹲炮",
                 "point_name": "虎蹲炮",
@@ -254,17 +320,96 @@ var selectPoint_htzzz = [
                 "role_y": "-123348.499"
             },
             {
+                "name": "",
+                "point_name": "动力推进",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_dltj",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "反坦克磁吸炸弹",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_cxzd",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "单兵动力辅助系统",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_fzxt",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "B区抛射虎蹲炮",
+                "point_name": "虎蹲炮",
+                "point_desc": "贴墙使用虎蹲准星下方对准集装箱，瞄准电线杆，控制前往B大的敌人",
+                "camp": "防守",
+                "icon": "icon_hdd",
+                "vid": "w1288xmvj4h",
+                "price": "",
+                "x": "62045.04",
+                "y":"-126383.967",
+                "role_x": "62772.72",
+                "role_y": "-128754.127"
+            },
+           
+            {
                 "name": "威龙喷气跳桥位",
                 "point_name": "动力推进",
                 "point_desc": "防守侧跳跃推进可直接到达中路桥上",
                 "camp": "防守",
-                "icon": "icon_csd",
+                "icon": "icon_dltj",
                 "vid": "f1288gkq843",
                 "price": "200",
                 "x": "67391.768",
                 "y":"-127325.666",
                 "role_x": "66651.413",
                 "role_y": "-128758.612"
+            },
+            {
+                "name": "",
+                "point_name": "反坦克磁吸炸弹",
+                "point_desc": "",
+                "camp": "防守",
+                "icon": "icon_cxzd",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "单兵动力辅助系统",
+                "point_desc": "",
+                "camp": "防守",
+                "icon": "icon_fzxt",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
             },
         ]
     },
@@ -274,6 +419,19 @@ var selectPoint_htzzz = [
         "icon": "icon_hl",
         "points": [
             {
+                "name": "",
+                "point_name": "超载模式",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_czms",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
                 "name": "中路排点炸烟手炮",
                 "point_name": "三联装手炮",
                 "point_desc": "沿垃圾桶右挪，瞄准电线杆所示位置发射手炮，可炸开中路烟",
@@ -281,10 +439,10 @@ var selectPoint_htzzz = [
                 "icon": "icon_slzsp",
                 "vid": "o1288ruiuie",
                 "price": "250",
-                "x": "62045.04",
-                "y":"-126383.967",
-                "role_x": "62772.72",
-                "role_y": "-128754.127"
+                "x": "66941",
+                "y":"-128883",
+                "role_x": "66806",
+                "role_y": "-123311"
             },
             {
                 "name": "中路前侧干扰烟",
@@ -299,6 +457,19 @@ var selectPoint_htzzz = [
                 "role_x": "68190.996",
                 "role_y": "-124222.546"
             },
+            {
+                "name": "",
+                "point_name": "战术滑铲",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_zshc",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
         ]
     },
     {
@@ -306,6 +477,32 @@ var selectPoint_htzzz = [
         "name": "乌鲁鲁",
         "icon": "icon_wll",
         "points": [
+            {
+                "name": "",
+                "point_name": "复合制导巡飞弹",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_dxfd",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "速凝掩体",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_snyt",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
             {
                 "name": "燃烧弹压制B大门",
                 "point_name": "复合型燃烧弹",
@@ -332,6 +529,19 @@ var selectPoint_htzzz = [
                 "role_x": "68704.729",
                 "role_y": "-123326.249"
             },
+            {
+                "name": "",
+                "point_name": "高分子防护材料",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_fhcl",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
         ]
     },
     {
@@ -339,6 +549,19 @@ var selectPoint_htzzz = [
         "name": "液氮",
         "icon": "icon_yd",
         "points": [
+            {
+                "name": "",
+                "point_name": "液氮榴弹发射器",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_ldfsq",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
             {
                 "name": "冷罐压制B大门",
                 "point_name": "杜瓦冷罐",
@@ -365,6 +588,32 @@ var selectPoint_htzzz = [
                 "role_x": "68704.729",
                 "role_y": "-123326.249"
             },
+            {
+                "name": "",
+                "point_name": "智能震撼弹",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_znzhd",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "被动：冰冻",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_bd",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
         ]
     },
     {
@@ -372,6 +621,32 @@ var selectPoint_htzzz = [
         "name": "蜂医",
         "icon": "icon_fy",
         "points": [
+            {
+                "name": "",
+                "point_name": "激素枪",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_jsq",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
+            {
+                "name": "",
+                "point_name": "烟幕",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_ym",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
+            },
             {
                 "name": "A点烟雾二层后门",
                 "point_name": "蜂巢科技烟雾弹",
@@ -410,6 +685,19 @@ var selectPoint_htzzz = [
                 "y":"-130711.28",
                 "role_x": "72151.562",
                 "role_y": "-128245.714"
+            },
+            {
+                "name": "",
+                "point_name": "高效救援",
+                "point_desc": "",
+                "camp": "进攻",
+                "icon": "icon_gxjy",
+                "vid":"",
+                "price": "",
+                "x": "",
+                "y":"",
+                "role_x": "",
+                "role_y": ""
             },
         ]
     },
