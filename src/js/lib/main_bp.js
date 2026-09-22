@@ -14,6 +14,7 @@ var bpRoleLine = null;
 var bpState = null;
 var bpSelectedPointKeys = {};
 var bpSelectedRoleKey = null;
+var bpCampView = '进攻';
 // PC main.js does not declare this legacy map-selection state; keep it global for shared handlers.
 var clickMap = '0';
 
@@ -617,7 +618,7 @@ function setBpUi(active) {
         .toggleClass('bp', active)
         .toggleClass('war', !active && isWar)
         .toggleClass('fh', !active && !isWar);
-    $('.btn-floor-mod, .btn-view-change, .type-change-ctn, .select-region-ctn, .curr-random, .curr-map-lv')
+    $('.btn-floor-mod, .btn-view-change, .type-change-ctn, .select-region-ctn, .curr-random, .curr-map-lv, .war-lv-change-ctn, .map-floor')
         .toggleClass('bp-hidden', active);
     $('.btn-bp-change .bp-change-text').text(active ? '退出爆破' : '爆破模式');
 }
@@ -695,8 +696,13 @@ function getBpPointListType() {
 }
 
 function getBpCampFilter() {
-    var camp = $.trim($('.mode-change-text').first().text());
-    return camp === '进攻' || camp === '防守' ? camp : '';
+    return bpCampView;
+}
+
+function setBpCampView(camp) {
+    var value = camp === '防守' ? '防守' : '进攻';
+    bpCampView = value;
+    $('.btn-view-change-bp').toggleClass('g', value === '进攻').toggleClass('f', value === '防守');
 }
 
 function isBpCampPoint(point) {
@@ -960,6 +966,7 @@ function resetBpChoose() {
     if (!bpMode) return;
     bpSelectedPointKeys = {};
     bpSelectedRoleKey = null;
+    setBpCampView('进攻');
     $('.bp-btns-item').removeClass('act');
     $('.bp-skill-title').hide();
     $('.bp-skill-list').empty();
@@ -1039,8 +1046,27 @@ function initBpMode() {
     $('.bp-curr-mode-ctn').off('click.bpCamp').on('click.bpCamp', function (event) {
         event.preventDefault();
         event.stopPropagation();
-        var $text = $('.mode-change-text').first();
-        $text.text($.trim($text.text()) === '防守' ? '进攻' : '防守');
+        setBpCampView(getBpCampFilter() === '防守' ? '进攻' : '防守');
+        if (bpMode) {
+            renderBpPointList();
+            generateBpPoints(getBpSelectedMapPoints());
+        }
+    });
+
+    $('.btn-view-change-bp .bp-view-change1').off('click.bpCamp').on('click.bpCamp', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        setBpCampView('进攻');
+        if (bpMode) {
+            renderBpPointList();
+            generateBpPoints(getBpSelectedMapPoints());
+        }
+    });
+
+    $('.btn-view-change-bp .bp-view-change2').off('click.bpCamp').on('click.bpCamp', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        setBpCampView('防守');
         if (bpMode) {
             renderBpPointList();
             generateBpPoints(getBpSelectedMapPoints());

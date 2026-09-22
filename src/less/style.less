@@ -2708,6 +2708,9 @@ a{
     display: none;
   }
 
+  .btn-view-change-bp{
+    display: none;
+  }
   //   爆破模式
 .bp-mode{
     .bp-point-name{
@@ -2720,6 +2723,64 @@ a{
 }
 .map-region-name{
     pointer-events: none;
+}
+
+.btn-view-change-bp{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    left: 1.7rem;
+    // top: 1.95rem;
+    top: 25.3%;
+    transform: scale(0.8);
+    &.g{
+        .bp-view-change1{
+            .choose-i{
+                background-image: data-uri('../img/zl_choose_active.png');
+                background-repeat: no-repeat;
+                background-size: 47px/2 auto;
+            }
+
+        }
+    }
+    &.f{
+        .bp-view-change2{
+            .choose-i{
+                background-image: data-uri('../img/zl_choose_active.png');
+                background-repeat: no-repeat;
+                background-size: 47px/2 auto;
+            }
+
+        }
+    }
+    .bp-view-change1{
+        display: flex;
+        align-items: center;
+        
+    }
+    .bp-view-change2{
+        display: flex;
+        align-items: center;
+        margin-left: 10px;
+    }
+    .choose-i{
+        font-kerning: 0;
+        width: 47px/2;
+        height: 47px/2;
+        background-image: data-uri('../img/zl_choose_normal.png');
+        background-repeat: no-repeat;
+        background-size: 47px/2 auto;
+    }
+    .bp-view-change1-text{
+        font-kerning: 0;
+        margin-left: 5px;
+        white-space: nowrap;
+    }
+    .bp-view-change2-text{
+        font-kerning: 0;
+        margin-left: 5px;
+        white-space: nowrap;
+    }
 }
 
 // 爆破点位弹层使用页面固定 DOM，位置由 main_bp.js 按 marker 坐标同步。
@@ -2923,7 +2984,7 @@ line-height: 32px; /* 145.455% */
 .bp-nav-ctn{
     display: block;
     // display: block !important;
-    --bp-nav-top: 26.8%;
+    --bp-nav-top: 28.3%;
     --bp-nav-height: ~"calc(100vh - var(--bp-nav-top) - 20px)";
     position: absolute;
     left: 50%;
