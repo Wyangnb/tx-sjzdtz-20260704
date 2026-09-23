@@ -7414,14 +7414,16 @@ a:focus {
   object-fit: contain;
 }
 .bp-mode .marker-pop-desc {
+  margin-top: 8px;
   margin-left: 20px;
-  width: 393px;
+  line-height: 22px;
+  width: 370px;
   color: rgba(234, 235, 235, 0.8);
   font-family: "ProjectD Type";
   font-size: 12px;
   font-style: normal;
   font-weight: 500;
-  line-height: 32px;
+  line-height: 18px;
   /* 145.455% */
 }
 .bp-mode .marker-pop-ctn.bp-mode {
