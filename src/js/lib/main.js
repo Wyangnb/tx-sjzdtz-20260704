@@ -2195,9 +2195,9 @@ var bindEvent = function () {
     btnNavState.on('click', function () {
         navState = !navState;
         if (navState) {
-            navCtn.attr('class', 'open img_nav_bg nav-ctn')
+            navCtn.removeClass('close').addClass('open')
         } else {
-            navCtn.attr('class', 'close img_nav_bg nav-ctn')
+            navCtn.removeClass('open').addClass('close')
         }
     })
 

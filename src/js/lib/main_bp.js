@@ -274,7 +274,7 @@ var BP_MAP_CONFIGS = {
     },
     smezy: {
         key: 'smezy',
-        title: '萨米尔庄园',
+        title: '萨米尔山庄',
         info: smezyInfo,
         points: selectPoint_smezy,
         regions: selectRegion_smezy,
