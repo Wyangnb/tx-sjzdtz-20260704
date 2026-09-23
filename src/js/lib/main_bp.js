@@ -262,7 +262,7 @@ var BP_MAP_CONFIGS = {
         info: htzzzInfo,
         points: selectPoint_htzzz,
         regions: selectRegion_htzzz,
-        tileExtension: 'mixed'
+        tileExtension: 'png'
     },
     lswdz: {
         key: 'lswdz',
@@ -270,7 +270,7 @@ var BP_MAP_CONFIGS = {
         info: lswdzInfo,
         points: selectPoint_lswdz,
         regions: selectRegion_lswdz,
-        tileExtension: 'jpg'
+        tileExtension: 'png'
     },
     smezy: {
         key: 'smezy',
@@ -278,7 +278,7 @@ var BP_MAP_CONFIGS = {
         info: smezyInfo,
         points: selectPoint_smezy,
         regions: selectRegion_smezy,
-        tileExtension: 'jpg'
+        tileExtension: 'png'
     }
 };
 
@@ -303,10 +303,11 @@ function getBpAssetRoot() {
 }
 
 function getBpTileExtension(coords) {
-    if (bpCurrentConfig && bpCurrentConfig.tileExtension === 'mixed') {
+    var extension = bpCurrentConfig && bpCurrentConfig.tileExtension;
+    if (extension === 'mixed') {
         return coords.z === 1 && !(coords.x === 0 && coords.y === 0) ? 'png' : 'jpg';
     }
-    return 'jpg';
+    return extension === 'png' ? 'png' : 'jpg';
 }
 
 function getBpMapPos(posX, posY) {
@@ -471,8 +472,8 @@ function createBpPoint(point) {
         icon: L.divIcon({
             className: 'map-icon bp-point-marker ' + markerTypeClass,
             html: '<div class="map-icon-bg"><img src="' + iconUrl + '" alt="" onerror="this.onerror=null;this.src=\'' + fallbackIconUrl + '\';" /></div>',
-            iconSize: [30, 30],
-            iconAnchor: [15, 15]
+            iconSize: [48, 48],
+            iconAnchor: [24, 24]
         }),
         zIndexOffset: 500
     });

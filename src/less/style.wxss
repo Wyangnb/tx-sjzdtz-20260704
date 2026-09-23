@@ -7240,6 +7240,19 @@ a:focus {
     opacity: 0;
   }
 }
+@keyframes markerLine2 {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
 @media screen and (max-height: 730px) {
   .m-index .nav-ctn .nav-title {
     top: 1%;
@@ -7397,6 +7410,20 @@ a:focus {
   background-size: 28px auto;
   cursor: pointer;
 }
+.bp-mode .bp-point-marker-role {
+  pointer-events: none !important;
+}
+.bp-mode .bp-point-marker-role .map-icon-bg::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border: 1px solid #0FF796;
+  animation: markerLine2 1s infinite;
+}
 .bp-mode .marker-pop-video-ctn {
   margin: 0 auto;
   margin-top: 20px;
@@ -7483,8 +7510,8 @@ a:focus {
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
-  width: 30px;
-  height: 30px;
+  width: 48px;
+  height: 48px;
   border: 1px solid #0FF796;
 }
 .bp-mode .bp-point-marker.act .map-icon-bg {
