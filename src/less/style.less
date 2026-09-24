@@ -2948,6 +2948,21 @@ line-height: 18px; /* 145.455% */
 }
 
 .bp-point-marker-skill{
+    &.act{
+        .map-icon-bg{
+            &::before{
+                content: "";
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+                height: 100%;
+                border: 1px solid #0FF796;
+                animation: markerLine2 1s infinite;
+            }
+        }
+    }
     .map-icon-bg{
         // background: transparent;
         // border: transparent;
@@ -3354,6 +3369,18 @@ line-height: 18px; /* 145.455% */
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+    cursor: move;
+
+    &.bp-dragging{
+        cursor: grabbing;
+        user-select: none;
+    }
+
+    .marker-preview-ctn,
+    .btn-close-marker-pop,
+    .btn-pop-floor{
+        cursor: auto;
+    }
 
     &.show{
         opacity: 1;

@@ -30,6 +30,8 @@ var bpPopupPositionHandler = null;
 var bpPopupMoveEndHandler = null;
 var bpPopupRequestId = 0;
 var bpPopupDelayTimer = null;
+var bpPopupDragOffset = {x: 0, y: 0};
+var bpPopupDragState = null;
 var markerPop = $('.marker-pop-ctn').first();
 var markerName = markerPop.find('.marker-name');
 var addressName = markerPop.find('.address-name');
@@ -43,6 +45,7 @@ function updateBpMarkerPopupPosition() {
     var mapRect = mapElement.getBoundingClientRect();
     var rootRect = rootElement.getBoundingClientRect();
     var point = map.latLngToContainerPoint(currClickMarker.getLatLng());
+    var width = markerPop.outerWidth() || 750;
     var height = markerPop.outerHeight() || 635;
     // 大于 2048px 时 MapContainer 会被 CSS scale(1.15) 放大，Leaflet
     // 返回的是未缩放的容器坐标，需要换算成屏幕上的实际坐标。
@@ -53,16 +56,54 @@ function updateBpMarkerPopupPosition() {
     var pointX = mapRect.left - rootRect.left + point.x * scaleX;
     var pointY = mapRect.top - rootRect.top + point.y * scaleY;
     // 弹层固定放在点位右侧，预留出点位图标的间距，避免遮挡被点击的点位。
-    var left = pointX + 24;
-    var top = pointY - height / 2;
+    var left = pointX + 24 + bpPopupDragOffset.x;
+    var top = pointY - height / 2 + bpPopupDragOffset.y;
+    var maxLeft = Math.max(12, rootElement.clientWidth - width - 12);
     var maxTop = Math.max(12, rootElement.clientHeight - height - 12);
 
     markerPop.css({
-        left: Math.max(12, left) + 'px',
+        left: Math.max(12, Math.min(left, maxLeft)) + 'px',
         top: Math.max(12, Math.min(top, maxTop)) + 'px',
         right: 'auto',
         bottom: 'auto',
         transform: 'none'
+    });
+}
+
+function bindBpMarkerPopupDrag() {
+    if (!markerPop.length) return;
+    markerPop.off('mousedown.bpPopupDrag').on('mousedown.bpPopupDrag', function (event) {
+        if (!bpMode || event.which !== 1 || $(event.target).closest('.marker-preview-ctn, .btn-close-marker-pop, .btn-pop-floor').length) return;
+
+        var rootElement = document.querySelector('.m-index');
+        var rootRect = rootElement ? rootElement.getBoundingClientRect() : null;
+        var rootScaleX = rootElement && rootElement.clientWidth ? rootRect.width / rootElement.clientWidth : 1;
+        var rootScaleY = rootElement && rootElement.clientHeight ? rootRect.height / rootElement.clientHeight : 1;
+        bpPopupDragState = {
+            startX: event.clientX,
+            startY: event.clientY,
+            offsetX: bpPopupDragOffset.x,
+            offsetY: bpPopupDragOffset.y,
+            scaleX: rootScaleX || 1,
+            scaleY: rootScaleY || 1
+        };
+        markerPop.addClass('bp-dragging');
+        event.preventDefault();
+        event.stopPropagation();
+
+        $(document).off('mousemove.bpPopupDrag mouseup.bpPopupDrag')
+            .on('mousemove.bpPopupDrag', function (moveEvent) {
+                if (!bpPopupDragState) return;
+                bpPopupDragOffset.x = bpPopupDragState.offsetX + (moveEvent.clientX - bpPopupDragState.startX) / bpPopupDragState.scaleX;
+                bpPopupDragOffset.y = bpPopupDragState.offsetY + (moveEvent.clientY - bpPopupDragState.startY) / bpPopupDragState.scaleY;
+                updateBpMarkerPopupPosition();
+                moveEvent.preventDefault();
+            })
+            .on('mouseup.bpPopupDrag', function () {
+                bpPopupDragState = null;
+                markerPop.removeClass('bp-dragging');
+                $(document).off('mousemove.bpPopupDrag mouseup.bpPopupDrag');
+            });
     });
 }
 
@@ -95,6 +136,9 @@ function cancelBpMarkerPopupOpen() {
         window.clearTimeout(bpPopupDelayTimer);
         bpPopupDelayTimer = null;
     }
+    bpPopupDragState = null;
+    markerPop.removeClass('bp-dragging');
+    $(document).off('mousemove.bpPopupDrag mouseup.bpPopupDrag');
 }
 
 function showBpMarkerPopup(point, requestId) {
@@ -493,6 +537,7 @@ function createBpPoint(point) {
         }
         currClickMarker = marker;
         marker.myIcon = marker.getIcon();
+        bpPopupDragOffset = {x: 0, y: 0};
         markerPop.removeClass('show');
         clearBpMarkerMedia();
         unbindBpMarkerPopupPosition();
@@ -905,15 +950,24 @@ function renderBpPointList(type) {
             });
             $('.bp-skill-title').show();
             renderBpPointItems($skillList, skills, 'bp-skill-item', function (skill, $skillItem) {
-                if (!getBpEntryMapPoints(skill).length) {
-                    $skillItem.removeClass('act').addClass('not-data');
-                    return;
-                }
+                if (!getBpEntryMapPoints(skill).length) return;
                 var skillSelected = !!bpSelectedPointKeys[skill.key];
                 if (skillSelected) delete bpSelectedPointKeys[skill.key];
                 else bpSelectedPointKeys[skill.key] = true;
                 $skillItem.toggleClass('act', !skillSelected);
                 generateBpPoints(getBpSelectedMapPoints());
+            });
+            $skillList.find('.bp-skill-item').each(function (index) {
+                var $skillItem = $(this);
+                if (getBpEntryMapPoints(skills[index]).length) return;
+                $skillItem
+                    .off('mouseenter.bpNoData mouseleave.bpNoData')
+                    .on('mouseenter.bpNoData', function () {
+                        $skillItem.addClass('not-data');
+                    })
+                    .on('mouseleave.bpNoData', function () {
+                        $skillItem.removeClass('not-data');
+                    });
             });
             generateBpPoints(getBpSelectedMapPoints());
     }
@@ -1033,6 +1087,7 @@ function exitBpMode() {
 }
 
 function initBpMode() {
+    bindBpMarkerPopupDrag();
     $('.btn-war-change2').addClass('bp-hidden');
     $('.btn-close-marker-pop').off('click.bpRole').on('click.bpRole', function () {
         if (!bpMode) return;

@@ -7522,6 +7522,17 @@ a:focus {
   height: 100%;
   object-fit: contain;
 }
+.bp-mode .bp-point-marker-skill.act .map-icon-bg::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border: 1px solid #0FF796;
+  animation: markerLine2 1s infinite;
+}
 .bp-mode .bp-point-marker-skill .map-icon-bg img {
   width: 80%;
   height: 80%;
