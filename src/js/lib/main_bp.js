@@ -23,9 +23,6 @@ var BP_DEFAULT_MAP = 'htzz';
 var BP_VIEW_BOUNDS_PADDING = 200;
 var bpCurrentConfig = null;
 var bpMarkerPlayer = null;
-var bpMarkerPlayerIndex = 0;
-var bpTxPlayerLoading = false;
-var bpTxPlayerCallbacks = [];
 var bpPopupPositionHandler = null;
 var bpPopupMoveEndHandler = null;
 var bpPopupRequestId = 0;
@@ -208,46 +205,24 @@ function clearBpMarkerMedia($scope) {
     $markerPops.each(function () {
         var $markerPop = $(this);
         var $preview = $markerPop.find('.marker-preview-ctn').first();
-        $preview.find('.marker-pop-video, .marker-pop-video-ctn').remove();
+        $preview.find('.marker-pop-video-ctn').empty().hide();
         $markerPop.find('.marker-pop-desc').remove();
         $preview.find('.marker-preview').attr('src', '').hide();
         $preview.hide();
     });
 }
 
-function initBpMarkerPlayer(containerId, vid, width, height, assignGlobal) {
+function initBpMarkerPlayer(containerId, vid, width, height) {
     if (typeof window.Txplayer !== 'function') return;
     var player = new window.Txplayer({
         containerId: containerId,
         vid: vid,
-        width: width || '600',
-        height: height || '400',
+        width: width || '370',
+        height: height || '208',
         autoplay: true
     });
-    if (assignGlobal !== false) bpMarkerPlayer = player;
+    bpMarkerPlayer = player;
     return player;
-}
-
-function loadBpTxPlayer(callback) {
-    if (typeof window.Txplayer === 'function') {
-        callback();
-        return;
-    }
-    bpTxPlayerCallbacks.push(callback);
-    if (bpTxPlayerLoading) return;
-    bpTxPlayerLoading = true;
-    var script = document.createElement('script');
-    script.src = '//vm.gtimg.cn/tencentvideo/txp/js/txplayer.js';
-    script.onload = function () {
-        bpTxPlayerLoading = false;
-        var callbacks = bpTxPlayerCallbacks.splice(0);
-        callbacks.forEach(function (render) { render(); });
-    };
-    script.onerror = function () {
-        bpTxPlayerLoading = false;
-        bpTxPlayerCallbacks.length = 0;
-    };
-    document.head.appendChild(script);
 }
 
 function getBpMarkerImageUrl(imageName) {
@@ -267,24 +242,18 @@ function renderBpMarkerMedia(point, $scope) {
     if (!$preview.length) return;
 
     clearBpMarkerMedia($markerPop);
-    $preview.find('.marker-pop-video, .marker-pop-video-ctn').remove();
     $preview.find('.marker-preview').attr('src', '').hide();
 
     var vid = point && point.vid ? String(point.vid).trim() : '';
     var img = getBpMarkerImageUrl(point && point.img);
     var pointDesc = point && point.point_desc ? String(point.point_desc).trim() : '';
     if (vid) {
-        var containerId = 'marker-pop-video-' + (++bpMarkerPlayerIndex);
-        $('<div>', {
-            'id': containerId,
-            'class': 'marker-pop-video-ctn'
-        }).appendTo($preview);
+        var $video = $preview.find('.marker-pop-video-ctn').first();
         $preview.show();
-        loadBpTxPlayer(function () {
-            if ($('#' + containerId).length && bpMode && document.body.contains($markerPop[0])) {
-                initBpMarkerPlayer(containerId, vid);
-            }
-        });
+        if ($video.length) {
+            $video.show();
+            initBpMarkerPlayer($video.attr('id'), vid);
+        }
     } else if (img) {
         $preview.find('.marker-preview').attr('src', img).show();
         $preview.show();
