@@ -248,10 +248,11 @@ function renderBpMarkerMedia(point, $scope) {
     var img = getBpMarkerImageUrl(point && point.img);
     var pointDesc = point && point.point_desc ? String(point.point_desc).trim() : '';
     if (vid) {
-        var $video = $preview.find('.marker-pop-video-ctn').first();
+        var $video =$('#marker-pop-video');
         $preview.show();
         if ($video.length) {
             $video.show();
+            // $('.marker-preview-ctn').show();
             initBpMarkerPlayer($video.attr('id'), vid);
         }
     } else if (img) {
