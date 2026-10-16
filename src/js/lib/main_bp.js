@@ -831,6 +831,22 @@ function getBpEntryPrice(entry) {
     return pricedPoint ? String(pricedPoint.price).trim() : '';
 }
 
+function clearBpSelectionByType(type) {
+    var prefix = type + ':';
+    Object.keys(bpSelectedPointKeys).forEach(function (key) {
+        if (key.indexOf(prefix) === 0) delete bpSelectedPointKeys[key];
+    });
+
+    if (type === 'role') {
+        bpSelectedRoleKey = null;
+        $('.bp-role-list .bp-point-item').removeClass('act');
+        $('.bp-skill-title').hide();
+        $('.bp-skill-list').empty();
+        return;
+    }
+    $('.bp-normal-list .bp-point-item').removeClass('act');
+}
+
 function renderBpPointItems($container, entries, className, onClick) {
     entries.forEach(function (entry, index) {
         var icon = entry.icon ? 'img_' + String(entry.icon).replace(/[^a-zA-Z0-9_-]/g, '') + '_s' : '';
@@ -883,6 +899,7 @@ function renderBpPointList(type) {
 
     function selectRole(entry, $item) {
             if (type === null) {
+                clearBpSelectionByType('normal');
                 $('.bp-btns-item').removeClass('act');
                 $('.bp-btn-role').addClass('act');
                 $normalList.hide();
@@ -944,6 +961,7 @@ function renderBpPointList(type) {
 
     function selectNormal(entry, $item) {
             if (type === null) {
+                clearBpSelectionByType('role');
                 $('.bp-btns-item').removeClass('act');
                 $('.bp-btn-normal').addClass('act');
                 $normalList.show();
@@ -1170,6 +1188,7 @@ $('.bp-btns-item').off('click.bpPointType').on('click.bpPointType', function (e)
     e.stopPropagation();
     var $item = $(e.currentTarget);
     if ($item.hasClass('bp-btn-normal')) {
+        clearBpSelectionByType('role');
         var normalEntries = getBpPointEntries('normal');
         normalEntries.forEach(function (entry) {
             if (getBpEntryMapPoints(entry).length) {
@@ -1183,9 +1202,11 @@ $('.bp-btns-item').off('click.bpPointType').on('click.bpPointType', function (e)
         return;
     }
     var wasActive = $item.hasClass('act');
+    clearBpSelectionByType('normal');
     $('.bp-btns-item').removeClass('act');
     if (!wasActive) $item.addClass('act');
     renderBpPointList(wasActive ? null : ($item.hasClass('bp-btn-role') ? 'role' : 'normal'));
+    generateBpPoints(getBpSelectedMapPoints());
 });
 
 $('.bp-nav-ctn .reset-choose').off('click.bpReset').on('click.bpReset', function (event) {
